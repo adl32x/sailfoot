@@ -1,0 +1,4 @@
+navigate file:///home/andreas/work/src/aloha-r/tests/test1.html
+has_text '.yo' 'Test'
+click 'a'
+input '.input1' 'Hello world!'
