@@ -1,0 +1,19 @@
+navigate file:///home/andreas/work/src/aloha-r/tests/test1.html
+
+#label test
+
+has_text '.yo' 'Test'
+click 'a'
+input '.input1' 'Hello world!'
+sleep 500
+log 'Hello log world!'
+
+
+#jump test
+
+read '.yo' variable
+read '.input1' variable
+
+#append 'data.log' variable
+#if variable 'Hello world!' keyword
+

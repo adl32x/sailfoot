@@ -2,7 +2,7 @@ package main
 
 import (
 	"testing"
-	"aloha-r/testcase"
+	"github.com/adl32x/sailfoot/testcase"
 	"fmt"
 )
 
