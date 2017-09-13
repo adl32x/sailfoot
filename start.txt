@@ -1,3 +1,0 @@
-navigate file:///home/andreas/Gits/channels-prototype/chat-client/chat_test_personal.html
-click 'a:nth-child(2)'
-has_text 'a:nth-child(2)' 'Not show'

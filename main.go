@@ -2,9 +2,8 @@ package main
 
 import (
 	"flag"
-	//log "github.com/sirupsen/logrus"
-	"aloha-r/testcase"
-	"aloha-r/driver"
+	"github.com/adl32x/sailfoot/testcase"
+	"github.com/adl32x/sailfoot/driver"
 )
 
 func main() {
