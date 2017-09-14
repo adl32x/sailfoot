@@ -9,60 +9,74 @@ import (
 	"github.com/adl32x/sailfoot/driver"
 	"time"
 	"strconv"
+	"fmt"
+	"path/filepath"
 )
 
 type Testcase struct {
 	Driver   driver.TestDriver
+	Command  Command
+	KnownCommands map[string]Command
+}
+
+type Command struct {
 	Commands [][]string
 	LabelLocation map[string]int
 	Variables map[string]string
 }
 
+func (c *Command) Init() {
+	c.LabelLocation = map[string]int{}
+	c.Variables = map[string]string{}
+}
+
 func NewTestCase(d driver.TestDriver) *Testcase {
 	t := &Testcase{}
 	t.Driver = d
-	t.LabelLocation = map[string]int{}
-	t.Variables = map[string]string{}
+	t.KnownCommands = map[string]Command{}
 	return t
 }
 
-func (t *Testcase) Run() {
-	t.Driver.Start()
-	for rowNumber := 0; rowNumber < len(t.Commands); rowNumber++ {
-		command := t.Commands[rowNumber]
+func (c *Command) Run(driver driver.TestDriver, knownCommands map[string]Command) {
+	for rowNumber := 0; rowNumber < len(c.Commands); rowNumber++ {
+		command := c.Commands[rowNumber]
 
 		skip_sleep := false
 		result := true
 
 		if command[0] == "click" {
-			result = t.Driver.Click(command[1])
+			result = driver.Click(command[1])
 		} else if command[0] == "navigate" {
-			result = t.Driver.Navigate(command[1])
+			result = driver.Navigate(command[1])
 		} else if command[0] == "has_text" {
-			result = t.Driver.HasText(command[1], command[2])
+			result = driver.HasText(command[1], command[2])
 		} else if command[0] == "input" {
-			result = t.Driver.Input(command[1], command[2])
+			result = driver.Input(command[1], command[2])
 		} else if command[0] == "sleep" {
 			sleep_time, _ := strconv.Atoi(command[1])
 			time.Sleep(time.Duration(sleep_time) * time.Millisecond)
 		} else if command[0] == "log" {
-			result = t.Driver.Log(command[1])
+			result = driver.Log(command[1])
 		} else if command[0] == "label" {
 			log.Infof("label, ´%s´", command[1])
-			t.LabelLocation[command[1]] = rowNumber
+			c.LabelLocation[command[1]] = rowNumber
 			skip_sleep = true
 		} else if command[0] == "jump" {
 			log.Infof("jump, ´%s´", command[1])
-			rowNumber = t.LabelLocation[command[1]] -1
+			rowNumber = c.LabelLocation[command[1]] -1
 			skip_sleep = true
 		} else if command[0] == "read" {
 			var value string
-			value, result = t.Driver.Read(command[1])
-			t.Variables[command[2]] = value
+			value, result = driver.Read(command[1])
+			c.Variables[command[2]] = value
+		} else {
+			keyword := knownCommands[command[0]]
+			// TODO check if the command exists
+			keyword.Run(driver, knownCommands)
 		}
 
 		if result == false {
-			t.Driver.Stop()
+			driver.Stop()
 			os.Exit(1)
 			return
 		}
@@ -72,7 +86,12 @@ func (t *Testcase) Run() {
 		}
 
 	}
+}
 
+
+func (t *Testcase) Run() {
+	t.Driver.Start()
+	t.Command.Run(t.Driver, t.KnownCommands)
 	t.Driver.Stop()
 }
 
@@ -84,9 +103,38 @@ func (t *Testcase) Load(filename string) {
 		os.Exit(1)
 	}
 
+	var location string
+	if strings.Contains(filename, "/") {
+		fileNameArray := strings.Split(filename, "/")
+		fileNameArray = fileNameArray[0:len(fileNameArray)-1]
+		location = strings.Join(fileNameArray, "/")
+		location = location + "/keywords/"
+	} else {
+		location = "keywords/"
+	}
+
+	filepath.Walk(location, func(path string, _ os.FileInfo, _ error) error {
+		if strings.Contains(path, ".txt") {
+			fmt.Println(path)
+			keyword := strings.Replace(filepath.Base(path), ".txt", "", -1)
+			file, _ := ioutil.ReadFile(path)
+			t.KnownCommands[keyword] = fileToCommands(file)
+		}
+
+		return nil
+	})
+
+	// os.Exit(0)
+
+	t.Command = fileToCommands(file)
+}
+
+func fileToCommands(file []byte) Command {
 	str := string(file)
 	log.Debug("File content: ", str)
 	rows := strings.Split(str, "\n")
+	c := Command{}
+	c.Init()
 
 	for _, row := range rows {
 		row = strings.Trim(row, " \t")
@@ -104,7 +152,7 @@ func (t *Testcase) Load(filename string) {
 
 		for i := range command {
 			c := &command[i]
-			if strings.HasPrefix(*c,"'") && strings.HasSuffix(*c,"'") {
+			if strings.HasPrefix(*c, "'") && strings.HasSuffix(*c, "'") {
 				command[i] = strings.Trim(*c, "'")
 				command[i] = strings.Replace(*c, "\\'", "'", -1)
 			}
@@ -128,11 +176,11 @@ func (t *Testcase) Load(filename string) {
 			// TODO. Add parsing checks.
 		} else if command[0] == "read" {
 			// TODO. Add parsing checks.
-		} else {
-			log.Fatal("Unknown command ", command)
 		}
 
-		t.Commands = append(t.Commands, command)
+		c.Commands = append(c.Commands, command)
 
 	}
+
+	return c
 }
