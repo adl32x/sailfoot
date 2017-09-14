@@ -1,0 +1,2 @@
+testcase 'First testcase'
+log 'yay!'

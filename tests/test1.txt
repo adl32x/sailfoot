@@ -14,6 +14,8 @@ log 'Hello log world!'
 read '.yo' variable
 read '.input1' variable
 
+foobar
+
 #append 'data.log' variable
 #if variable 'Hello world!' keyword
 
