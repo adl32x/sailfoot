@@ -2,8 +2,8 @@ package main
 
 import (
 	"testing"
-	"github.com/adl32x/sailfoot/testcase"
 	"fmt"
+	"github.com/adl32x/sailfoot/testcase"
 )
 
 func assertEqual(t *testing.T, a interface{}, b interface{}, message string) {
