@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"fmt"
 	"path/filepath"
+	"github.com/adl32x/sailfoot/utils"
 )
 
 type Testcase struct {
@@ -23,11 +24,19 @@ type Command struct {
 	Commands [][]string
 	LabelLocation map[string]int
 	Variables map[string]string
+	IsATest bool
+	Passed bool
+	TestCaseName string
+	LastResult bool
 }
 
 func (c *Command) Init() {
 	c.LabelLocation = map[string]int{}
 	c.Variables = map[string]string{}
+	c.IsATest = false
+	c.Passed = true
+	c.TestCaseName = ""
+	c.LastResult = false
 }
 
 func NewTestCase(d driver.TestDriver) *Testcase {
@@ -37,12 +46,28 @@ func NewTestCase(d driver.TestDriver) *Testcase {
 	return t
 }
 
-func (c *Command) Run(driver driver.TestDriver, knownCommands map[string]Command) {
+func (c *Command) Run(driver driver.TestDriver, knownCommands map[string]Command, args []string) {
 	for rowNumber := 0; rowNumber < len(c.Commands); rowNumber++ {
 		command := c.Commands[rowNumber]
 
 		skip_sleep := false
 		result := true
+		skip_fail := false
+
+		for i := range command {
+			c := &command[i]
+
+			if i == 0 && strings.HasPrefix(*c,"!") {
+				skip_fail = true
+				command[i] = strings.Trim(*c, "!")
+			}
+
+			if strings.HasPrefix(*c, "$$") && strings.HasSuffix(*c, "$$") {
+				command[i] = strings.Trim(*c, "$$")
+				argn, _ := strconv.Atoi(command[i])
+				command[i] = args[argn] // TODO: Maybe check if this exists. Also make it possible to escape $$.
+			}
+		}
 
 		if command[0] == "click" {
 			result = driver.Click(command[1])
@@ -69,13 +94,26 @@ func (c *Command) Run(driver driver.TestDriver, knownCommands map[string]Command
 			var value string
 			value, result = driver.Read(command[1])
 			c.Variables[command[2]] = value
+		} else if command[0] == "testcase" {
+			skip_sleep = true
+		} else if command[0] == "stop_if_success" {
+			if c.LastResult == true {
+				return
+			}
+		} else if command[0] == "execute" {
+			skip_sleep = true
+			out, err := utils.Execute(command[1])
+			if err != nil {
+				log.Fatalf("Command %s failed, %s", command[1], err)
+			}
+			log.Printf("execute, output: %s", out)
 		} else {
 			keyword := knownCommands[command[0]]
 			// TODO check if the command exists
-			keyword.Run(driver, knownCommands)
+			keyword.Run(driver, knownCommands, command[1:])
 		}
 
-		if result == false {
+		if result == false && skip_fail == false {
 			driver.Stop()
 			os.Exit(1)
 			return
@@ -85,14 +123,29 @@ func (c *Command) Run(driver driver.TestDriver, knownCommands map[string]Command
 			time.Sleep(150 * time.Millisecond)
 		}
 
+		c.LastResult = result
+
+	}
+
+	if c.IsATest {
+		c.Passed = true
 	}
 }
 
 
 func (t *Testcase) Run() {
 	t.Driver.Start()
-	t.Command.Run(t.Driver, t.KnownCommands)
+	t.Command.Run(t.Driver, t.KnownCommands, nil)
 	t.Driver.Stop()
+
+	for i, _ := range t.KnownCommands {
+		command := t.KnownCommands[i]
+		if command.IsATest && command.Passed{
+			fmt.Printf("%s - Passed\n", command.TestCaseName)
+		} else if command.IsATest && !command.Passed {
+			fmt.Printf("%s - Failed\n", command.TestCaseName)
+		}
+	}
 }
 
 func (t *Testcase) Load(filename string) {
@@ -176,6 +229,11 @@ func fileToCommands(file []byte) Command {
 			// TODO. Add parsing checks.
 		} else if command[0] == "read" {
 			// TODO. Add parsing checks.
+		} else if command[0] == "execute" {
+			// TODO. Add parsing checks.
+		} else if command[0] == "testcase" {
+			c.IsATest = true
+			c.TestCaseName = command[1]
 		}
 
 		c.Commands = append(c.Commands, command)

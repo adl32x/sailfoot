@@ -45,15 +45,16 @@ func (w *WebDriver) Navigate(arg string) bool {
 	if err != nil {
 		return false
 	}
-	log.Info("navigate, ´%s´", arg)
+	log.Infof("navigate, ´%s´", arg)
 	return true
 }
 
 func (w *WebDriver) HasText(arg string, text string) bool {
-	el := w.page.Find(arg)
-	count, _ := el.Count()
+	el := w.page.All(arg)
+	count, err := el.Count()
 	if count == 0 {
 		log.Errorf("has_text, could not find element ´%s´", arg)
+		log.Error(err)
 		return false
 	}
 	if count > 1 {
