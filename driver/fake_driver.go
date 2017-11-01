@@ -8,7 +8,7 @@ func (f *FakeDriver) Start() {}
 
 func (f *FakeDriver) Stop() {}
 
-func (f *FakeDriver) Click(arg string) bool {
+func (f *FakeDriver) Click(is_xpath bool, arg string) bool {
 	return true
 }
 
