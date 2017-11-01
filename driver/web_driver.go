@@ -23,8 +23,15 @@ func (w *WebDriver) Stop() {
 	w.driver.Stop()
 }
 
-func (w *WebDriver) Click(arg string) bool {
-	el := w.page.Find(arg)
+func (w *WebDriver) Click(is_xpath bool, arg string) bool {
+	var el *agouti.MultiSelection
+
+	if is_xpath {
+		el = w.page.AllByXPath(arg)
+	} else {
+		el = w.page.All(arg)
+	}
+
 	count, _ := el.Count()
 	if count == 0 {
 		log.Errorf("click, could not find element ´%s´", arg)

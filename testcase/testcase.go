@@ -70,7 +70,9 @@ func (c *Command) Run(driver driver.TestDriver, knownCommands map[string]Command
 		}
 
 		if command[0] == "click" {
-			result = driver.Click(command[1])
+			result = driver.Click(false, command[1])
+		} else if command[0] == "click_x" {
+			result = driver.Click(true, command[1])
 		} else if command[0] == "navigate" {
 			result = driver.Navigate(command[1])
 		} else if command[0] == "has_text" {
