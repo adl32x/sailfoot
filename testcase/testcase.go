@@ -48,6 +48,7 @@ func NewTestCase(d driver.TestDriver) *Testcase {
 
 func (c *Command) Run(driver driver.TestDriver, knownCommands map[string]Command, args []string) {
 	for rowNumber := 0; rowNumber < len(c.Commands); rowNumber++ {
+
 		command := c.Commands[rowNumber]
 
 		skip_sleep := false
@@ -62,11 +63,19 @@ func (c *Command) Run(driver driver.TestDriver, knownCommands map[string]Command
 				command[i] = strings.Trim(*c, "!")
 			}
 
-			if strings.HasPrefix(*c, "$$") && strings.HasSuffix(*c, "$$") {
-				command[i] = strings.Trim(*c, "$$")
-				argn, _ := strconv.Atoi(command[i])
-				command[i] = args[argn] // TODO: Maybe check if this exists. Also make it possible to escape $$.
+			//
+			re := regexp.MustCompile("\\$\\$([0-9+])\\$\\$")
+			var templateArgs = re.FindAllStringSubmatch(*c, -1)
+
+			if templateArgs != nil {
+				for _, row := range templateArgs {
+					var argn, _ = strconv.Atoi(row[1])
+
+					command[i] = strings.Replace(*c, "$$"+row[1]+"$$", args[argn], -1)
+					// TODO: Maybe check if args[argn] exists. Also make it possible to escape $$.
+				}
 			}
+
 		}
 
 		if command[0] == "click" {
@@ -78,7 +87,9 @@ func (c *Command) Run(driver driver.TestDriver, knownCommands map[string]Command
 		} else if command[0] == "has_text" {
 			result = driver.HasText(command[1], command[2])
 		} else if command[0] == "input" {
-			result = driver.Input(command[1], command[2])
+			result = driver.Input(false, command[1], command[2])
+		} else if command[0] == "input_x" {
+			result = driver.Input(true, command[1], command[2])
 		} else if command[0] == "sleep" {
 			sleep_time, _ := strconv.Atoi(command[1])
 			time.Sleep(time.Duration(sleep_time) * time.Millisecond)
