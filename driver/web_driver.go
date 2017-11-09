@@ -78,8 +78,15 @@ func (w *WebDriver) HasText(arg string, text string) bool {
 	return true
 }
 
-func (w *WebDriver) Input(arg string, text string) bool {
-	el := w.page.Find(arg)
+func (w *WebDriver) Input(is_xpath bool, arg string, text string) bool {
+	var el *agouti.MultiSelection
+
+	if is_xpath {
+		el = w.page.AllByXPath(arg)
+	} else {
+		el = w.page.All(arg)
+	}
+
 	count, _ := el.Count()
 	if count == 0 {
 		log.Errorf("input, could not find element ´%s´", arg)

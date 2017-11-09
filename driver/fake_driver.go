@@ -20,7 +20,7 @@ func (f *FakeDriver) HasText(arg string, text string) bool {
 	return true
 }
 
-func (f *FakeDriver) Input(arg string, text string) bool {
+func (f *FakeDriver) Input(is_xpath bool, arg string, text string) bool {
 	return true
 }
 
