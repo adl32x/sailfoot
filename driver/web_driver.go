@@ -108,7 +108,7 @@ func (w *WebDriver) Log(arg string) bool {
 }
 
 func (w *WebDriver) Read(arg string) (string, bool) {
-	el := w.page.Find(arg)
+	el := w.page.All(arg)
 
 	count, _ := el.Count()
 

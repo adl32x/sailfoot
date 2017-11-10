@@ -51,6 +51,9 @@ func (c *Command) Run(driver driver.TestDriver, knownCommands map[string]Command
 
 		command := c.Commands[rowNumber]
 
+		commandTmp := make([]string, len(command))
+		copy(commandTmp, command)
+
 		skip_sleep := false
 		result := true
 		skip_fail := false
@@ -58,9 +61,10 @@ func (c *Command) Run(driver driver.TestDriver, knownCommands map[string]Command
 		for i := range command {
 			c := &command[i]
 
+
 			if i == 0 && strings.HasPrefix(*c,"!") {
 				skip_fail = true
-				command[i] = strings.Trim(*c, "!")
+				commandTmp[i] = strings.Trim(*c, "!")
 			}
 
 			//
@@ -71,59 +75,59 @@ func (c *Command) Run(driver driver.TestDriver, knownCommands map[string]Command
 				for _, row := range templateArgs {
 					var argn, _ = strconv.Atoi(row[1])
 
-					command[i] = strings.Replace(*c, "$$"+row[1]+"$$", args[argn], -1)
+					commandTmp[i] = strings.Replace(*c, "$$"+row[1]+"$$", args[argn], -1)
 					// TODO: Maybe check if args[argn] exists. Also make it possible to escape $$.
 				}
 			}
 
 		}
 
-		if command[0] == "click" {
-			result = driver.Click(false, command[1])
-		} else if command[0] == "click_x" {
-			result = driver.Click(true, command[1])
-		} else if command[0] == "navigate" {
-			result = driver.Navigate(command[1])
-		} else if command[0] == "has_text" {
-			result = driver.HasText(command[1], command[2])
-		} else if command[0] == "input" {
-			result = driver.Input(false, command[1], command[2])
-		} else if command[0] == "input_x" {
-			result = driver.Input(true, command[1], command[2])
-		} else if command[0] == "sleep" {
-			sleep_time, _ := strconv.Atoi(command[1])
+		if commandTmp[0] == "click" {
+			result = driver.Click(false, commandTmp[1])
+		} else if commandTmp[0] == "click_x" {
+			result = driver.Click(true, commandTmp[1])
+		} else if commandTmp[0] == "navigate" {
+			result = driver.Navigate(commandTmp[1])
+		} else if commandTmp[0] == "has_text" {
+			result = driver.HasText(commandTmp[1], commandTmp[2])
+		} else if commandTmp[0] == "input" {
+			result = driver.Input(false, commandTmp[1], commandTmp[2])
+		} else if commandTmp[0] == "input_x" {
+			result = driver.Input(true, commandTmp[1], commandTmp[2])
+		} else if commandTmp[0] == "sleep" {
+			sleep_time, _ := strconv.Atoi(commandTmp[1])
 			time.Sleep(time.Duration(sleep_time) * time.Millisecond)
-		} else if command[0] == "log" {
-			result = driver.Log(command[1])
-		} else if command[0] == "label" {
-			log.Infof("label, ´%s´", command[1])
-			c.LabelLocation[command[1]] = rowNumber
+		} else if commandTmp[0] == "log" {
+			result = driver.Log(commandTmp[1])
+		} else if commandTmp[0] == "label" {
+			log.Infof("label, ´%s´", commandTmp[1])
+			c.LabelLocation[commandTmp[1]] = rowNumber
 			skip_sleep = true
-		} else if command[0] == "jump" {
-			log.Infof("jump, ´%s´", command[1])
-			rowNumber = c.LabelLocation[command[1]] -1
+		} else if commandTmp[0] == "jump" {
+			log.Infof("jump, ´%s´", commandTmp[1])
+			rowNumber = c.LabelLocation[commandTmp[1]] -1
 			skip_sleep = true
-		} else if command[0] == "read" {
+		} else if commandTmp[0] == "read" {
 			var value string
-			value, result = driver.Read(command[1])
-			c.Variables[command[2]] = value
-		} else if command[0] == "testcase" {
+			value, result = driver.Read(commandTmp[1])
+			c.Variables[commandTmp[2]] = value
+		} else if commandTmp[0] == "testcase" {
 			skip_sleep = true
-		} else if command[0] == "stop_if_success" {
+		} else if commandTmp[0] == "stop_if_success" {
 			if c.LastResult == true {
 				return
 			}
-		} else if command[0] == "execute" {
+		} else if commandTmp[0] == "execute" {
 			skip_sleep = true
-			out, err := utils.Execute(command[1])
+			out, err := utils.Execute(commandTmp[1])
 			if err != nil {
-				log.Fatalf("Command %s failed, %s", command[1], err)
+				log.Fatalf("Command %s failed, %s", commandTmp[1], err)
 			}
 			log.Printf("execute, output: %s", out)
 		} else {
-			keyword := knownCommands[command[0]]
+			keyword := knownCommands[commandTmp[0]]
 			// TODO check if the command exists
-			keyword.Run(driver, knownCommands, command[1:])
+			keyword.Run(driver, knownCommands, commandTmp[1:])
 		}
 
 		if result == false && skip_fail == false {
