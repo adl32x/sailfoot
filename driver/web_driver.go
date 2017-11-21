@@ -3,6 +3,7 @@ package driver
 import (
 	log "github.com/sirupsen/logrus"
 	"github.com/sclevine/agouti"
+	"time"
 )
 
 type WebDriver struct {
@@ -17,6 +18,7 @@ func (w *WebDriver) Start() {
 	}
 	w.driver = driver
 	w.page, _ = w.driver.NewPage(agouti.Browser("chrome"))
+	w.page.SetImplicitWait(10000)
 }
 
 func (w *WebDriver) Stop() {
@@ -136,4 +138,57 @@ func (w *WebDriver) Read(arg string) (string, bool) {
 		log.Infof("read, ´%s´ got value ´%s´", arg, t)
 		return t, true
 	}
+}
+
+func (w *WebDriver) ExecuteJavascript(jsString string) bool {
+	w.page.RunScript(jsString, map[string]interface{}{}, struct{}{})
+	return true
+}
+
+func (w *WebDriver) ClickOnText(selector string, text string) bool {
+
+	var number int;
+	jsString := `
+	var rootElement = document.body;
+
+	var filter = {
+        acceptNode: function(node){
+            if(node.nodeType === document.TEXT_NODE && node.nodeValue.includes(text)){
+                 return NodeFilter.FILTER_ACCEPT;
+            }
+            return NodeFilter.FILTER_REJECT;
+        }
+    }
+    var nodes = [];
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, filter, false);
+    while(walker.nextNode()){
+       nodes.push(walker.currentNode.parentNode);
+    }
+    if (nodes.length > 0) {
+        nodes[0].click();
+        return 1;
+    }
+    return 0;
+	`
+
+	retries := 10
+	for {
+		w.page.RunScript(jsString, map[string]interface{}{"text": text}, &number)
+		if retries == 0 || number == 1 {
+			break
+		}
+
+		time.Sleep(150 * time.Millisecond)
+		retries = retries - 1
+	}
+
+
+
+	if number == 1 {
+		log.Infof("click_on_text, ´%s´", text)
+	} else {
+		log.Errorf("click_on_text, ´%s´", text)
+	}
+
+	return number == 1
 }

@@ -9,6 +9,8 @@ type TestDriver interface {
 	Input(bool, string, string) bool
 	Log(string) bool
 	Read(string) (string, bool)
+	ExecuteJavascript (string) bool
+	ClickOnText (string, string) bool
 }
 
 
