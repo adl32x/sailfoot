@@ -31,3 +31,11 @@ func (f *FakeDriver) Log(arg string) bool {
 func (f *FakeDriver) Read(arg string) (string, bool) {
 	return "", true
 }
+
+func (w *FakeDriver) ExecuteJavascript(jsString string) bool {
+	return true
+}
+
+func (w *FakeDriver) ClickOnText(selector string, text string) bool {
+	return true
+}
