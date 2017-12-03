@@ -9,6 +9,8 @@ import (
 func main() {
 	startFile := flag.String("file", "start.txt", "Start file")
 	driverType := flag.String("driver", "default", "(experimental) Driver type")
+	runner := flag.String("runner", "cli", "Runner type (cli / server)")
+	port := flag.Int("runner port", 3000, "Runner port (cli / server)")
 	flag.Parse()
 
 	var test *testcase.Testcase
@@ -19,5 +21,11 @@ func main() {
 	}
 
 	test.Load(*startFile)
-	test.Run()
+
+	if *runner == "server" {
+		test.StartServer(*port)
+	} else {
+		test.Run()
+	}
+
 }
