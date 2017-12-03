@@ -167,6 +167,16 @@ func (t *Testcase) Run() {
 	}
 }
 
+func (t *Testcase) StartServer(port int) {
+	t.Driver.Start()
+
+	t.Listen(port)
+	// t.Command.Run(t.Driver, t.KnownCommands, nil)
+
+	// t.Driver.Stop()
+
+}
+
 func (t *Testcase) Load(filename string) {
 	file, err := ioutil.ReadFile(filename)
 
