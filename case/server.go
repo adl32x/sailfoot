@@ -1,4 +1,4 @@
-package testcase
+package _case
 
 import (
 	"net/http"
@@ -9,7 +9,7 @@ type Response struct {
 
 }
 
-func (t *Testcase) handler(w http.ResponseWriter, r *http.Request) {
+func (t *Case) handler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("GET: ", r.URL.Query())
 
@@ -25,15 +25,16 @@ func (t *Testcase) handler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(args)
 	}
 
-	commands := [][]string{[]string{keyword}}
-	t.Command.Commands = commands
+	command := append([]string{keyword}, args...)
+	commands := [][]string{command}
+	t.RunList.Commands = commands
 
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte("{\"status\": \"ok\"}"))
 }
 
-func (t *Testcase) Listen(port int) {
+func (t *Case) Listen(port int) {
 	http.HandleFunc("/", t.handler)
 	http.ListenAndServe(":"+fmt.Sprint(port), nil)
 }

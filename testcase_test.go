@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 	"fmt"
-	"github.com/adl32x/sailfoot/testcase"
+	"github.com/adl32x/sailfoot/case"
 	"regexp"
 )
 
@@ -19,19 +19,19 @@ func assertEqual(t *testing.T, a interface{}, b interface{}, message string) {
 
 func TestLoad(t *testing.T) {
 
-	var test testcase.Testcase
-	test.KnownCommands = map[string]testcase.Command{}
+	var test _case.Case
+	test.KnownCommands = map[string]_case.RunList{}
 
 	test.Load("tests/unit.txt")
 
-	assertEqual(t, test.Command.Commands[0][0], "click", "")
-	assertEqual(t, test.Command.Commands[0][1], "div", "")
+	assertEqual(t, test.RunList.Commands[0][0], "click", "")
+	assertEqual(t, test.RunList.Commands[0][1], "div", "")
 
-	assertEqual(t, test.Command.Commands[1][0], "navigate", "")
+	assertEqual(t, test.RunList.Commands[1][0], "navigate", "")
 
-	assertEqual(t, test.Command.Commands[2][0], "has_text", "")
-	assertEqual(t, test.Command.Commands[2][1], "#test .class", "")
-	assertEqual(t, test.Command.Commands[2][2], "It's, not its!", "")
+	assertEqual(t, test.RunList.Commands[2][0], "has_text", "")
+	assertEqual(t, test.RunList.Commands[2][1], "#test .class", "")
+	assertEqual(t, test.RunList.Commands[2][2], "It's, not its!", "")
 }
 
 func TestRegex(t *testing.T) {
