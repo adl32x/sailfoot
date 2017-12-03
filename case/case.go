@@ -1,4 +1,4 @@
-package testcase
+package _case
 
 import (
 	"io/ioutil"
@@ -14,13 +14,13 @@ import (
 	"github.com/adl32x/sailfoot/utils"
 )
 
-type Testcase struct {
-	Driver   driver.TestDriver
-	Command  Command
-	KnownCommands map[string]Command
+type Case struct {
+	Driver        driver.TestDriver
+	RunList       RunList
+	KnownCommands map[string]RunList
 }
 
-type Command struct {
+type RunList struct {
 	Commands [][]string
 	LabelLocation map[string]int
 	Variables map[string]string
@@ -30,7 +30,7 @@ type Command struct {
 	LastResult bool
 }
 
-func (c *Command) Init() {
+func (c *RunList) Init() {
 	c.LabelLocation = map[string]int{}
 	c.Variables = map[string]string{}
 	c.IsATest = false
@@ -39,14 +39,14 @@ func (c *Command) Init() {
 	c.LastResult = false
 }
 
-func NewTestCase(d driver.TestDriver) *Testcase {
-	t := &Testcase{}
+func NewTestCase(d driver.TestDriver) *Case {
+	t := &Case{}
 	t.Driver = d
-	t.KnownCommands = map[string]Command{}
+	t.KnownCommands = map[string]RunList{}
 	return t
 }
 
-func (c *Command) Run(driver driver.TestDriver, knownCommands map[string]Command, args []string) {
+func (c *RunList) Run(driver driver.TestDriver, knownCommands map[string]RunList, args []string) {
 	for rowNumber := 0; rowNumber < len(c.Commands); rowNumber++ {
 
 		command := c.Commands[rowNumber]
@@ -123,7 +123,7 @@ func (c *Command) Run(driver driver.TestDriver, knownCommands map[string]Command
 			skip_sleep = true
 			out, err := utils.Execute(commandTmp[1])
 			if err != nil {
-				log.Fatalf("Command %s failed, %s", commandTmp[1], err)
+				log.Fatalf("RunList %s failed, %s", commandTmp[1], err)
 			}
 			log.Printf("execute, output: %s", out)
 		} else {
@@ -152,9 +152,9 @@ func (c *Command) Run(driver driver.TestDriver, knownCommands map[string]Command
 }
 
 
-func (t *Testcase) Run() {
+func (t *Case) Run() {
 	t.Driver.Start()
-	t.Command.Run(t.Driver, t.KnownCommands, nil)
+	t.RunList.Run(t.Driver, t.KnownCommands, nil)
 	t.Driver.Stop()
 
 	for i, _ := range t.KnownCommands {
@@ -167,17 +167,17 @@ func (t *Testcase) Run() {
 	}
 }
 
-func (t *Testcase) StartServer(port int) {
+func (t *Case) StartServer(port int) {
 	t.Driver.Start()
 
 	t.Listen(port)
-	// t.Command.Run(t.Driver, t.KnownCommands, nil)
+	// t.RunList.Run(t.Driver, t.KnownCommands, nil)
 
 	// t.Driver.Stop()
 
 }
 
-func (t *Testcase) Load(filename string) {
+func (t *Case) Load(filename string) {
 	file, err := ioutil.ReadFile(filename)
 
 	if err != nil {
@@ -208,14 +208,14 @@ func (t *Testcase) Load(filename string) {
 
 	// os.Exit(0)
 
-	t.Command = fileToCommands(file)
+	t.RunList = fileToCommands(file)
 }
 
-func fileToCommands(file []byte) Command {
+func fileToCommands(file []byte) RunList {
 	str := string(file)
 	log.Debug("File content: ", str)
 	rows := strings.Split(str, "\n")
-	c := Command{}
+	c := RunList{}
 	c.Init()
 
 	for _, row := range rows {
