@@ -1,17 +1,18 @@
-package _case
+package sailfoot
 
 import (
-	"io/ioutil"
-	log "github.com/sirupsen/logrus"
-	"os"
-	"strings"
-	"regexp"
-	"github.com/adl32x/sailfoot/driver"
-	"time"
-	"strconv"
 	"fmt"
+	"io/ioutil"
+	"os"
 	"path/filepath"
+	"regexp"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/adl32x/sailfoot/driver"
 	"github.com/adl32x/sailfoot/utils"
+	log "github.com/sirupsen/logrus"
 )
 
 type Case struct {
@@ -21,13 +22,13 @@ type Case struct {
 }
 
 type RunList struct {
-	Commands [][]string
+	Commands      [][]string
 	LabelLocation map[string]int
-	Variables map[string]string
-	IsATest bool
-	Passed bool
-	TestCaseName string
-	LastResult bool
+	Variables     map[string]string
+	IsATest       bool
+	Passed        bool
+	TestCaseName  string
+	LastResult    bool
 }
 
 func (c *RunList) Init() {
@@ -39,7 +40,7 @@ func (c *RunList) Init() {
 	c.LastResult = false
 }
 
-func NewTestCase(d driver.TestDriver) *Case {
+func NewCase(d driver.TestDriver) *Case {
 	t := &Case{}
 	t.Driver = d
 	t.KnownCommands = map[string]RunList{}
@@ -61,8 +62,7 @@ func (c *RunList) Run(driver driver.TestDriver, knownCommands map[string]RunList
 		for i := range command {
 			c := &command[i]
 
-
-			if i == 0 && strings.HasPrefix(*c,"!") {
+			if i == 0 && strings.HasPrefix(*c, "!") {
 				skip_fail = true
 				commandTmp[i] = strings.Trim(*c, "!")
 			}
@@ -107,7 +107,7 @@ func (c *RunList) Run(driver driver.TestDriver, knownCommands map[string]RunList
 			skip_sleep = true
 		} else if commandTmp[0] == "jump" {
 			log.Infof("jump, ´%s´", commandTmp[1])
-			rowNumber = c.LabelLocation[commandTmp[1]] -1
+			rowNumber = c.LabelLocation[commandTmp[1]] - 1
 			skip_sleep = true
 		} else if commandTmp[0] == "read" {
 			var value string
@@ -151,15 +151,14 @@ func (c *RunList) Run(driver driver.TestDriver, knownCommands map[string]RunList
 	}
 }
 
-
 func (t *Case) Run() {
 	t.Driver.Start()
 	t.RunList.Run(t.Driver, t.KnownCommands, nil)
 	t.Driver.Stop()
 
-	for i, _ := range t.KnownCommands {
+	for i := range t.KnownCommands {
 		command := t.KnownCommands[i]
-		if command.IsATest && command.Passed{
+		if command.IsATest && command.Passed {
 			fmt.Printf("%s - Passed\n", command.TestCaseName)
 		} else if command.IsATest && !command.Passed {
 			fmt.Printf("%s - Failed\n", command.TestCaseName)
@@ -188,7 +187,7 @@ func (t *Case) Load(filename string) {
 	var location string
 	if strings.Contains(filename, "/") {
 		fileNameArray := strings.Split(filename, "/")
-		fileNameArray = fileNameArray[0:len(fileNameArray)-1]
+		fileNameArray = fileNameArray[0 : len(fileNameArray)-1]
 		location = strings.Join(fileNameArray, "/")
 		location = location + "/keywords/"
 	} else {

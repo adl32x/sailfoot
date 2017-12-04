@@ -2,8 +2,9 @@ package main
 
 import (
 	"flag"
-	"github.com/adl32x/sailfoot/case"
+
 	"github.com/adl32x/sailfoot/driver"
+	"github.com/adl32x/sailfoot/sailfoot"
 )
 
 func main() {
@@ -13,19 +14,19 @@ func main() {
 	port := flag.Int("runner port", 3000, "Runner port (cli / server)")
 	flag.Parse()
 
-	var test *_case.Case
+	var sf *sailfoot.Case
 	if *driverType == "fake" {
-		test = _case.NewTestCase(&driver.FakeDriver{})
+		sf = sailfoot.NewCase(&driver.FakeDriver{})
 	} else {
-		test = _case.NewTestCase(&driver.WebDriver{})
+		sf = sailfoot.NewCase(&driver.WebDriver{})
 	}
 
-	test.Load(*startFile)
+	sf.Load(*startFile)
 
 	if *runner == "server" {
-		test.StartServer(*port)
+		sf.StartServer(*port)
 	} else {
-		test.Run()
+		sf.Run()
 	}
 
 }
