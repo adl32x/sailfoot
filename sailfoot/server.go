@@ -1,12 +1,11 @@
-package _case
+package sailfoot
 
 import (
-	"net/http"
 	"fmt"
+	"net/http"
 )
 
 type Response struct {
-
 }
 
 func (t *Case) handler(w http.ResponseWriter, r *http.Request) {
@@ -28,7 +27,6 @@ func (t *Case) handler(w http.ResponseWriter, r *http.Request) {
 	command := append([]string{keyword}, args...)
 	commands := [][]string{command}
 	t.RunList.Commands = commands
-
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte("{\"status\": \"ok\"}"))

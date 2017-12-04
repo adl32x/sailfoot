@@ -1,10 +1,11 @@
 package main
 
 import (
-	"testing"
 	"fmt"
-	"github.com/adl32x/sailfoot/case"
 	"regexp"
+	"testing"
+
+	"github.com/adl32x/sailfoot/sailfoot"
 )
 
 func assertEqual(t *testing.T, a interface{}, b interface{}, message string) {
@@ -19,8 +20,8 @@ func assertEqual(t *testing.T, a interface{}, b interface{}, message string) {
 
 func TestLoad(t *testing.T) {
 
-	var test _case.Case
-	test.KnownCommands = map[string]_case.RunList{}
+	var test sailfoot.Case
+	test.KnownCommands = map[string]sailfoot.RunList{}
 
 	test.Load("tests/unit.txt")
 
@@ -43,4 +44,3 @@ func TestRegex(t *testing.T) {
 		fmt.Println(row[1])
 	}
 }
-
