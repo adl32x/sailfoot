@@ -20,19 +20,19 @@ func assertEqual(t *testing.T, a interface{}, b interface{}, message string) {
 
 func TestLoad(t *testing.T) {
 
-	var test sailfoot.Case
-	test.KnownCommands = map[string]sailfoot.RunList{}
+	var sf sailfoot.Case
+	sf.KnownKeywords = map[string]sailfoot.Keyword{}
 
-	test.Load("tests/unit.txt")
+	sf.Load("tests/unit.txt")
 
-	assertEqual(t, test.RunList.Commands[0][0], "click", "")
-	assertEqual(t, test.RunList.Commands[0][1], "div", "")
+	assertEqual(t, sf.RootKeyword.Commands[0][0], "click", "")
+	assertEqual(t, sf.RootKeyword.Commands[0][1], "div", "")
 
-	assertEqual(t, test.RunList.Commands[1][0], "navigate", "")
+	assertEqual(t, sf.RootKeyword.Commands[1][0], "navigate", "")
 
-	assertEqual(t, test.RunList.Commands[2][0], "has_text", "")
-	assertEqual(t, test.RunList.Commands[2][1], "#test .class", "")
-	assertEqual(t, test.RunList.Commands[2][2], "It's, not its!", "")
+	assertEqual(t, sf.RootKeyword.Commands[2][0], "has_text", "")
+	assertEqual(t, sf.RootKeyword.Commands[2][1], "#test .class", "")
+	assertEqual(t, sf.RootKeyword.Commands[2][2], "It's, not its!", "")
 }
 
 func TestRegex(t *testing.T) {
