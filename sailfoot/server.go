@@ -8,7 +8,7 @@ import (
 type Response struct {
 }
 
-func (t *Case) handler(w http.ResponseWriter, r *http.Request) {
+func (c *Case) handler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("GET: ", r.URL.Query())
 
@@ -26,13 +26,13 @@ func (t *Case) handler(w http.ResponseWriter, r *http.Request) {
 
 	command := append([]string{keyword}, args...)
 	commands := [][]string{command}
-	t.RunList.Commands = commands
+	c.RootKeyword.Commands = commands
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte("{\"status\": \"ok\"}"))
 }
 
-func (t *Case) Listen(port int) {
-	http.HandleFunc("/", t.handler)
+func (c *Case) Listen(port int) {
+	http.HandleFunc("/", c.handler)
 	http.ListenAndServe(":"+fmt.Sprint(port), nil)
 }
