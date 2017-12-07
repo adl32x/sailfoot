@@ -33,14 +33,12 @@ func (c *Case) Load(filename string) {
 		if strings.Contains(path, ".txt") {
 			fmt.Println(path)
 			keyword := strings.Replace(filepath.Base(path), ".txt", "", -1)
-			file, _ := ioutil.ReadFile(path)
-			c.KnownKeywords[keyword] = fileToCommands(file)
+			walkedFile, _ := ioutil.ReadFile(path)
+			c.KnownKeywords[keyword] = fileToCommands(walkedFile)
 		}
 
 		return nil
 	})
-
-	// os.Exit(0)
 
 	c.RootKeyword = fileToCommands(file)
 }

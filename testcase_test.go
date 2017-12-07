@@ -33,6 +33,7 @@ func TestLoad(t *testing.T) {
 	assertEqual(t, sf.RootKeyword.Commands[2][0], "has_text", "")
 	assertEqual(t, sf.RootKeyword.Commands[2][1], "#test .class", "")
 	assertEqual(t, sf.RootKeyword.Commands[2][2], "It's, not its!", "")
+	assertEqual(t, sf.RootKeyword.Commands[3][1], "mongo TESTDBE2E --eval 'db.dropDatabase()'", "")
 }
 
 func TestRegex(t *testing.T) {
