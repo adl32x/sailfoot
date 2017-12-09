@@ -3,7 +3,6 @@ package driver
 type FakeDriver struct {
 }
 
-
 func (f *FakeDriver) Start() {}
 
 func (f *FakeDriver) Stop() {}
@@ -16,7 +15,7 @@ func (f *FakeDriver) Navigate(arg string) bool {
 	return true
 }
 
-func (f *FakeDriver) HasText(arg string, text string) bool {
+func (f *FakeDriver) HasText(arg string, arg2 string) bool {
 	return true
 }
 
