@@ -1,14 +1,15 @@
 package driver
 
 import (
-	log "github.com/sirupsen/logrus"
-	"github.com/sclevine/agouti"
 	"time"
+
+	"github.com/sclevine/agouti"
+	log "github.com/sirupsen/logrus"
 )
 
 type WebDriver struct {
 	driver *agouti.WebDriver
-	page *agouti.Page
+	page   *agouti.Page
 }
 
 func (w *WebDriver) Start() {
@@ -58,25 +59,49 @@ func (w *WebDriver) Navigate(arg string) bool {
 	return true
 }
 
-func (w *WebDriver) HasText(arg string, text string) bool {
+func (w *WebDriver) HasText(arg string, arg2 string) bool {
+
+	if arg2 == "" {
+		var number int
+
+		retries := 10
+		for {
+			w.page.RunScript(JsHasText, map[string]interface{}{"text": arg}, &number)
+			if retries == 0 || number == 1 {
+				break
+			}
+
+			time.Sleep(150 * time.Millisecond)
+			retries = retries - 1
+		}
+
+		if number == 1 {
+			log.Infof("has_text, ´%s´", arg)
+		} else {
+			log.Errorf("has_text, ´%s´", arg)
+		}
+
+		return number == 1
+	}
+
 	el := w.page.All(arg)
-	count, err := el.Count()
+	count, _ := el.Count()
 	if count == 0 {
 		log.Errorf("has_text, could not find element ´%s´", arg)
-		log.Error(err)
 		return false
 	}
 	if count > 1 {
+		log.Error("has_text, too many elements")
 		return false
 	} else {
 		t, _ := el.Text()
 
-		if t != text {
-			log.Errorf("has_text, failed ´%s´ ´%s´", arg, text)
+		if t != arg2 {
+			log.Errorf("has_text, failed ´%s´ ´%s´", arg, arg2)
 			return false
 		}
 	}
-	log.Infof("has_text, ´%s´ ´%s´", arg, text)
+	log.Infof("has_text, ´%s´ ´%s´", arg, arg2)
 	return true
 }
 
@@ -147,33 +172,11 @@ func (w *WebDriver) ExecuteJavascript(jsString string) bool {
 
 func (w *WebDriver) ClickOnText(selector string, text string) bool {
 
-	var number int;
-	jsString := `
-	var rootElement = document.body;
-
-	var filter = {
-        acceptNode: function(node){
-            if(node.nodeType === document.TEXT_NODE && node.nodeValue.includes(text)){
-                 return NodeFilter.FILTER_ACCEPT;
-            }
-            return NodeFilter.FILTER_REJECT;
-        }
-    }
-    var nodes = [];
-    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, filter, false);
-    while(walker.nextNode()){
-       nodes.push(walker.currentNode.parentNode);
-    }
-    if (nodes.length > 0) {
-        nodes[0].click();
-        return 1;
-    }
-    return 0;
-	`
+	var number int
 
 	retries := 10
 	for {
-		w.page.RunScript(jsString, map[string]interface{}{"text": text}, &number)
+		w.page.RunScript(JsClickWithText, map[string]interface{}{"text": text}, &number)
 		if retries == 0 || number == 1 {
 			break
 		}
@@ -181,8 +184,6 @@ func (w *WebDriver) ClickOnText(selector string, text string) bool {
 		time.Sleep(150 * time.Millisecond)
 		retries = retries - 1
 	}
-
-
 
 	if number == 1 {
 		log.Infof("click_on_text, ´%s´", text)

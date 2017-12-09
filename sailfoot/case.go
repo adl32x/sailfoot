@@ -89,7 +89,11 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]Keyword
 		} else if commandTmp[0] == "navigate" {
 			result = driver.Navigate(commandTmp[1])
 		} else if commandTmp[0] == "has_text" {
-			result = driver.HasText(commandTmp[1], commandTmp[2])
+			if len(commandTmp) == 3 {
+				result = driver.HasText(commandTmp[1], commandTmp[2])
+			} else {
+				result = driver.HasText(commandTmp[1], "")
+			}
 		} else if commandTmp[0] == "input" {
 			result = driver.Input(false, commandTmp[1], commandTmp[2])
 		} else if commandTmp[0] == "input_x" {
