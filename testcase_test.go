@@ -45,3 +45,28 @@ func TestRegex(t *testing.T) {
 		fmt.Println(row[1])
 	}
 }
+
+func TestLineSplit(t *testing.T) {
+	r1 := sailfoot.SplitLine("hello world")
+	r2 := sailfoot.SplitLine("hello 'world' 'foo bar'")
+	r3 := sailfoot.SplitLine("hello 'it\\'s' 'a new world'")
+	r4 := sailfoot.SplitLine("execute 'mongo TESTDBE2E --eval \\'db.dropDatabase()\\''")
+	r5 := sailfoot.SplitLine("execute 'mongo TESTDBE2E --eval \\'db.dropDatabase()\\' '")
+
+	// fmt.Println(strings.Join(r1, ","))
+	// fmt.Println(strings.Join(r2, ","))
+	// fmt.Println(strings.Join(r3, ","))
+	// fmt.Println(strings.Join(r4, ","))
+	// fmt.Println(strings.Join(r5, ","))
+
+	assertEqual(t, r1[0], "hello", "")
+	assertEqual(t, r1[1], "world", "")
+
+	assertEqual(t, r2[0], "hello", "")
+	assertEqual(t, r2[1], "world", "")
+	assertEqual(t, r2[2], "foo bar", "")
+
+	assertEqual(t, r3[1], "it's", "")
+	assertEqual(t, r4[1], "mongo TESTDBE2E --eval 'db.dropDatabase()'", "")
+	assertEqual(t, r5[1], "mongo TESTDBE2E --eval 'db.dropDatabase()' ", "")
+}

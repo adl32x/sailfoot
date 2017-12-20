@@ -53,28 +53,43 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]Keyword
 		commandTmp := make([]string, len(command))
 		copy(commandTmp, command)
 
-		skip_sleep := false
+		skipSleep := false
 		result := true
-		skip_fail := false
+		skipFail := false
 
 		for i := range command {
 			c := &command[i]
 
 			if i == 0 && strings.HasPrefix(*c, "!") {
-				skip_fail = true
+				skipFail = true
 				commandTmp[i] = strings.Trim(*c, "!")
 			}
 
-			//
-			re := regexp.MustCompile("\\$\\$([0-9+])\\$\\$")
+			re := regexp.MustCompile("\\$\\$([0-9]+)\\$\\$")
+			// TODO: Make it possible to escape $$.
 			var templateArgs = re.FindAllStringSubmatch(*c, -1)
 
 			if templateArgs != nil {
 				for _, row := range templateArgs {
 					var argn, _ = strconv.Atoi(row[1])
 
-					commandTmp[i] = strings.Replace(*c, "$$"+row[1]+"$$", args[argn], -1)
-					// TODO: Maybe check if args[argn] exists. Also make it possible to escape $$.
+					if argn >= len(args) {
+						log.Warn("%s: Not enough arguments given, replacing with empty string.", commandTmp[0])
+						commandTmp[i] = strings.Replace(*c, "$$"+row[1]+"$$", "", -1)
+					} else {
+						commandTmp[i] = strings.Replace(*c, "$$"+row[1]+"$$", args[argn], -1)
+					}
+				}
+			}
+
+			re = regexp.MustCompile("\\$\\$([A-Za-z][A-Za-z0-9]*)\\$\\$")
+			// TODO: Make it possible to escape $$.
+			templateArgs = re.FindAllStringSubmatch(*c, -1)
+
+			if templateArgs != nil {
+				for _, row := range templateArgs {
+					// TODO check that variables exist.
+					commandTmp[i] = strings.Replace(*c, "$$"+row[1]+"$$", k.Variables[row[1]], -1)
 				}
 			}
 
@@ -99,30 +114,30 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]Keyword
 		} else if commandTmp[0] == "input_x" {
 			result = driver.Input(true, commandTmp[1], commandTmp[2])
 		} else if commandTmp[0] == "sleep" {
-			sleep_time, _ := strconv.Atoi(commandTmp[1])
-			time.Sleep(time.Duration(sleep_time) * time.Millisecond)
+			sleepTime, _ := strconv.Atoi(commandTmp[1])
+			time.Sleep(time.Duration(sleepTime) * time.Millisecond)
 		} else if commandTmp[0] == "log" {
 			result = driver.Log(commandTmp[1])
 		} else if commandTmp[0] == "label" {
 			log.Infof("label, ´%s´", commandTmp[1])
 			k.LabelLocation[commandTmp[1]] = rowNumber
-			skip_sleep = true
+			skipSleep = true
 		} else if commandTmp[0] == "jump" {
 			log.Infof("jump, ´%s´", commandTmp[1])
 			rowNumber = k.LabelLocation[commandTmp[1]] - 1
-			skip_sleep = true
+			skipSleep = true
 		} else if commandTmp[0] == "read" {
 			var value string
 			value, result = driver.Read(commandTmp[1])
 			k.Variables[commandTmp[2]] = value
 		} else if commandTmp[0] == "testcase" {
-			skip_sleep = true
+			skipSleep = true
 		} else if commandTmp[0] == "stop_if_success" {
 			if k.LastResult == true {
 				return
 			}
 		} else if commandTmp[0] == "execute" {
-			skip_sleep = true
+			skipSleep = true
 			out, err := utils.Execute(commandTmp[1])
 			if err != nil {
 				log.Fatalf("RunList %s failed, %s", commandTmp[1], err)
@@ -134,13 +149,13 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]Keyword
 			keyword.Run(driver, knownCommands, commandTmp[1:])
 		}
 
-		if result == false && skip_fail == false {
+		if result == false && skipFail == false {
 			driver.Stop()
 			os.Exit(1)
 			return
 		}
 
-		if skip_sleep {
+		if skipSleep {
 			time.Sleep(150 * time.Millisecond)
 		}
 

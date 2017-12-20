@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
@@ -60,17 +59,7 @@ func fileToCommands(file []byte) Keyword {
 			continue
 		}
 
-		re, _ := regexp.Compile(`('(\\'|[^'])*'|[\S]+)+`)
-
-		command := re.FindAllString(row, -1)
-
-		for i := range command {
-			c := &command[i]
-			if strings.HasPrefix(*c, "'") && strings.HasSuffix(*c, "'") {
-				command[i] = strings.Trim(*c, "'")
-				command[i] = strings.Replace(*c, "\\'", "'", -1)
-			}
-		}
+		command := SplitLine(row)
 
 		if command[0] == "click" {
 			// TODO. Add parsing checks.
