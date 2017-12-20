@@ -1,4 +1,4 @@
 click 'div'
 navigate 'http://something'
 has_text '#test .class' 'It\'s, not its!'
-execute 'mongo TESTDBE2E --eval \'db.dropDatabase()\' '
+execute 'mongo TESTDBE2E --eval \'db.dropDatabase()\''
