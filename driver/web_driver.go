@@ -10,6 +10,7 @@ import (
 type WebDriver struct {
 	driver *agouti.WebDriver
 	page   *agouti.Page
+	pages  []*agouti.Page
 }
 
 func (w *WebDriver) Start() {
@@ -19,7 +20,16 @@ func (w *WebDriver) Start() {
 	}
 	w.driver = driver
 	w.page, _ = w.driver.NewPage(agouti.Browser("chrome"))
+	w.pages = append(w.pages, w.page)
 	w.page.SetImplicitWait(10000)
+}
+
+func (w *WebDriver) GoToNthWindow(nth int) bool {
+	if nth < len(w.pages) {
+		w.page = w.pages[nth]
+		return true
+	}
+	return false
 }
 
 func (w *WebDriver) Stop() {
@@ -56,6 +66,14 @@ func (w *WebDriver) Navigate(arg string) bool {
 		return false
 	}
 	log.Infof("navigate, ´%s´", arg)
+	return true
+}
+
+func (w *WebDriver) NewPage(arg string) bool {
+	w.page, _ = w.driver.NewPage(agouti.Browser("chrome"))
+	w.pages = append(w.pages, w.page)
+	log.Infof("new_page, ´%s´", arg)
+	w.Navigate(arg)
 	return true
 }
 
