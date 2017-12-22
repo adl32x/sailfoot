@@ -103,6 +103,11 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]Keyword
 			result = driver.ClickOnText("", commandTmp[1])
 		} else if commandTmp[0] == "navigate" {
 			result = driver.Navigate(commandTmp[1])
+		} else if commandTmp[0] == "new_page" {
+			result = driver.NewPage(commandTmp[1])
+		} else if commandTmp[0] == "go_to_window" {
+			nthWindow, _ := strconv.Atoi(commandTmp[1])
+			result = driver.GoToNthWindow(nthWindow)
 		} else if commandTmp[0] == "has_text" {
 			if len(commandTmp) == 3 {
 				result = driver.HasText(commandTmp[1], commandTmp[2])

@@ -15,6 +15,14 @@ func (f *FakeDriver) Navigate(arg string) bool {
 	return true
 }
 
+func (f *FakeDriver) NewPage(arg string) bool {
+	return true
+}
+
+func (f *FakeDriver) GoToNthWindow(arg int) bool {
+	return true
+}
+
 func (f *FakeDriver) HasText(arg string, arg2 string) bool {
 	return true
 }
