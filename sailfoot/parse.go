@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/adl32x/sailfoot/log"
 )
 
 func (c *Case) Load(filename string) {
