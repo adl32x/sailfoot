@@ -3,8 +3,10 @@ package driver
 import (
 	"time"
 
+	log "github.com/adl32x/sailfoot/log"
+	"github.com/logrusorgru/aurora"
+
 	"github.com/sclevine/agouti"
-	log "github.com/sirupsen/logrus"
 )
 
 type WebDriver struct {
@@ -16,7 +18,7 @@ type WebDriver struct {
 func (w *WebDriver) Start() {
 	driver := agouti.ChromeDriver()
 	if err := driver.Start(); err != nil {
-		log.Fatal("Failed to start Selenium: ", err)
+		log.Error("Failed to start Selenium: ", err)
 	}
 	w.driver = driver
 	w.page, _ = w.driver.NewPage(agouti.Browser("chrome"))
@@ -51,12 +53,12 @@ func (w *WebDriver) Click(is_xpath bool, arg string) bool {
 		return false
 	}
 	if count > 1 {
-		log.Infof("click, ´%s´ found multiple elements, clicking first.", arg)
+		log.Logf("click, ´%s´ found multiple elements, clicking first.", arg)
 		el.First(arg).Click()
 	} else {
 		el.Click()
 	}
-	log.Infof("click, ´%s´", arg)
+	log.Logf("click, ´%s´", arg)
 	return true
 }
 
@@ -65,14 +67,14 @@ func (w *WebDriver) Navigate(arg string) bool {
 	if err != nil {
 		return false
 	}
-	log.Infof("navigate, ´%s´", arg)
+	log.Logf("navigate, ´%s´", arg)
 	return true
 }
 
 func (w *WebDriver) NewPage(arg string) bool {
 	w.page, _ = w.driver.NewPage(agouti.Browser("chrome"))
 	w.pages = append(w.pages, w.page)
-	log.Infof("new_page, ´%s´", arg)
+	log.Logf("new_page, ´%s´", arg)
 	w.Navigate(arg)
 	return true
 }
@@ -94,9 +96,9 @@ func (w *WebDriver) HasText(arg string, arg2 string) bool {
 		}
 
 		if number == 1 {
-			log.Infof("has_text, ´%s´", arg)
+			log.Logf("has_text, ´%s´", arg)
 		} else {
-			log.Errorf("has_text, ´%s´", arg)
+			log.Errorf("has_text failed. has_text, ´%s´", arg)
 		}
 
 		return number == 1
@@ -119,7 +121,7 @@ func (w *WebDriver) HasText(arg string, arg2 string) bool {
 			return false
 		}
 	}
-	log.Infof("has_text, ´%s´ ´%s´", arg, arg2)
+	log.Logf("has_text, ´%s´ ´%s´", arg, arg2)
 	return true
 }
 
@@ -138,17 +140,17 @@ func (w *WebDriver) Input(is_xpath bool, arg string, text string) bool {
 		return false
 	}
 	if count > 1 {
-		log.Infof("input, ´%s´ found multiple elements, filling first with ´%s´", arg, text)
+		log.Logf("input, ´%s´ found multiple elements, filling first with ´%s´", arg, text)
 		el.First(arg).Fill(text)
 	} else {
 		el.Fill(text)
 	}
-	log.Infof("input, ´%s´ ´%s´", arg, text)
+	log.Logf("input, ´%s´ ´%s´", arg, text)
 	return true
 }
 
 func (w *WebDriver) Log(arg string) bool {
-	log.Println(arg)
+	log.Logf("%s %s", aurora.Bold("Log:"), arg)
 	return true
 }
 
@@ -168,7 +170,7 @@ func (w *WebDriver) Read(arg string) (string, bool) {
 		if tag == "input" {
 			t, _ = el.Attribute("value")
 		}
-		log.Infof("read, ´%s´ found multiple elements, returning first value ´%s´", arg, t)
+		log.Logf("read, ´%s´ found multiple elements, returning first value ´%s´", arg, t)
 		return t, true
 
 	} else {
@@ -178,7 +180,7 @@ func (w *WebDriver) Read(arg string) (string, bool) {
 		if tag == "input" {
 			t, _ = el.Attribute("value")
 		}
-		log.Infof("read, ´%s´ got value ´%s´", arg, t)
+		log.Logf("read, ´%s´ got value ´%s´", arg, t)
 		return t, true
 	}
 }
@@ -204,7 +206,7 @@ func (w *WebDriver) ClickOnText(selector string, text string) bool {
 	}
 
 	if number == 1 {
-		log.Infof("click_on_text, ´%s´", text)
+		log.Logf("click_on_text, ´%s´", text)
 	} else {
 		log.Errorf("click_on_text, ´%s´", text)
 	}
