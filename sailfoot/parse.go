@@ -1,7 +1,6 @@
 package sailfoot
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -30,7 +29,7 @@ func (c *Case) Load(filename string) {
 
 	filepath.Walk(location, func(path string, _ os.FileInfo, _ error) error {
 		if strings.Contains(path, ".txt") {
-			fmt.Println(path)
+			log.Debug("Loaded file: ", path)
 			keyword := strings.Replace(filepath.Base(path), ".txt", "", -1)
 			walkedFile, _ := ioutil.ReadFile(path)
 			c.KnownKeywords[keyword] = fileToCommands(walkedFile)
