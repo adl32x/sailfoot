@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 
 	"github.com/adl32x/sailfoot/driver"
 	"github.com/adl32x/sailfoot/sailfoot"
@@ -13,6 +14,8 @@ func main() {
 	runner := flag.String("runner", "cli", "Runner type (cli / server)")
 	port := flag.Int("runner port", 3000, "Runner port (cli / server)")
 	flag.Parse()
+
+	fmt.Printf("🍤 Sailfoot. Startfile: %s\n\n", *startFile)
 
 	var sf *sailfoot.Case
 	if *driverType == "fake" {
