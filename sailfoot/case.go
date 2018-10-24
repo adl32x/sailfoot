@@ -8,9 +8,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/logrusorgru/aurora"
+
 	"github.com/adl32x/sailfoot/driver"
+	"github.com/adl32x/sailfoot/log"
 	"github.com/adl32x/sailfoot/utils"
-	log "github.com/sirupsen/logrus"
 )
 
 type Case struct {
@@ -74,7 +76,7 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]Keyword
 					var argn, _ = strconv.Atoi(row[1])
 
 					if argn >= len(args) {
-						log.Warn("%s: Not enough arguments given, replacing with empty string.", commandTmp[0])
+						log.Errorf("%s: Not enough arguments given, replacing with empty string.", commandTmp[0])
 						commandTmp[i] = strings.Replace(*c, "$$"+row[1]+"$$", "", -1)
 					} else {
 						commandTmp[i] = strings.Replace(*c, "$$"+row[1]+"$$", args[argn], -1)
@@ -124,11 +126,11 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]Keyword
 		} else if commandTmp[0] == "log" {
 			result = driver.Log(commandTmp[1])
 		} else if commandTmp[0] == "label" {
-			log.Infof("label, ´%s´", commandTmp[1])
+			log.Logf("label, ´%s´", commandTmp[1])
 			k.LabelLocation[commandTmp[1]] = rowNumber
 			skipSleep = true
 		} else if commandTmp[0] == "jump" {
-			log.Infof("jump, ´%s´", commandTmp[1])
+			log.Logf("jump, ´%s´", commandTmp[1])
 			rowNumber = k.LabelLocation[commandTmp[1]] - 1
 			skipSleep = true
 		} else if commandTmp[0] == "read" {
@@ -136,6 +138,7 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]Keyword
 			value, result = driver.Read(commandTmp[1])
 			k.Variables[commandTmp[2]] = value
 		} else if commandTmp[0] == "testcase" {
+			log.Printf("\n🍤 Running testcase: %s \n", commandTmp[1])
 			skipSleep = true
 		} else if commandTmp[0] == "stop_if_success" {
 			if k.LastResult == true {
@@ -145,9 +148,10 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]Keyword
 			skipSleep = true
 			out, err := utils.Execute(commandTmp[1])
 			if err != nil {
-				log.Fatalf("RunList %s failed, %s", commandTmp[1], err)
+				log.Errorf("RunList %s failed, %s", commandTmp[1], err)
 			}
-			log.Printf("execute, output: %s", out)
+			log.Log("Execute", "´"+commandTmp[1]+"´")
+			log.Println(aurora.Bold(out))
 		} else {
 			keyword := knownCommands[commandTmp[0]]
 			// TODO check if the command exists
@@ -178,12 +182,17 @@ func (c *Case) Run() {
 	c.RootKeyword.Run(c.Driver, c.KnownKeywords, nil)
 	c.Driver.Stop()
 
+	printResults := false
 	for i := range c.KnownKeywords {
 		command := c.KnownKeywords[i]
+		if command.IsATest && printResults == false {
+			fmt.Print("\n\nResults: \n\n")
+			printResults = true
+		}
 		if command.IsATest && command.Passed {
-			fmt.Printf("%s - Passed\n", command.TestCaseName)
+			fmt.Printf("%s %s\n", aurora.Green("✓"), command.TestCaseName)
 		} else if command.IsATest && !command.Passed {
-			fmt.Printf("%s - Failed\n", command.TestCaseName)
+			fmt.Printf("%s %s\n", aurora.Red("✗"), command.TestCaseName)
 		}
 	}
 }
