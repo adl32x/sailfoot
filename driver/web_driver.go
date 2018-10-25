@@ -113,14 +113,15 @@ func (w *WebDriver) HasText(arg string, arg2 string) bool {
 	if count > 1 {
 		log.Error("has_text, too many elements")
 		return false
-	} else {
-		t, _ := el.Text()
-
-		if t != arg2 {
-			log.Errorf("has_text, failed ´%s´ ´%s´", arg, arg2)
-			return false
-		}
 	}
+
+	t, _ := el.Text()
+
+	if t != arg2 {
+		log.Errorf("has_text, failed ´%s´ ´%s´", arg, arg2)
+		return false
+	}
+
 	log.Logf("has_text, ´%s´ ´%s´", arg, arg2)
 	return true
 }
@@ -209,6 +210,30 @@ func (w *WebDriver) ClickOnText(selector string, text string) bool {
 		log.Logf("click_on_text, ´%s´", text)
 	} else {
 		log.Errorf("click_on_text, ´%s´", text)
+	}
+
+	return number == 1
+}
+
+func (w *WebDriver) ClickClosestTo(selector1 string, selector2 string) bool {
+
+	var number int
+
+	retries := 10
+	for {
+		w.page.RunScript(JsClickClosest, map[string]interface{}{"text": selector1, "text2": selector2}, &number)
+		if retries == 0 || number == 1 {
+			break
+		}
+
+		time.Sleep(150 * time.Millisecond)
+		retries = retries - 1
+	}
+
+	if number == 1 {
+		log.Logf("click_closest_to, ´%s´ ´%s´", selector1, selector2)
+	} else {
+		log.Errorf("click_closest_to, ´%s´ ´%s´", selector1, selector2)
 	}
 
 	return number == 1

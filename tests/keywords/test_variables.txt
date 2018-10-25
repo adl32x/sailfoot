@@ -1,0 +1,3 @@
+testcase 'Test variables'
+log 'yay!'
+log $$0$$

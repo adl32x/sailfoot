@@ -103,6 +103,8 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]Keyword
 			result = driver.Click(true, commandTmp[1])
 		} else if commandTmp[0] == "click_on_text" {
 			result = driver.ClickOnText("", commandTmp[1])
+		} else if commandTmp[0] == "click_closest_to" {
+			result = driver.ClickClosestTo(commandTmp[1], commandTmp[2])
 		} else if commandTmp[0] == "navigate" {
 			result = driver.Navigate(commandTmp[1])
 		} else if commandTmp[0] == "new_page" {
