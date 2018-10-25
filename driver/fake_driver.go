@@ -46,3 +46,7 @@ func (w *FakeDriver) ExecuteJavascript(jsString string) bool {
 func (w *FakeDriver) ClickOnText(selector string, text string) bool {
 	return true
 }
+
+func (w *FakeDriver) ClickClosestTo(selector1 string, selector2 string) bool {
+	return true
+}

@@ -1,3 +1,0 @@
-testcase 'First testcase'
-log 'yay!'
-log $$0$$

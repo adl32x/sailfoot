@@ -1,5 +1,5 @@
 
-navigate file:///home/andreas/work/src/aloha-r/tests/test1.html
+navigate file:///home/andreas/work/src/github.com/adl32x/sailfoot/tests/test1.html
 
 
 #label test
@@ -19,8 +19,9 @@ log $$variable$$
 read '.input1' variable
 log $$variable$$
 
-foobar barfoo
-!baz
+test_variables barfoo
+test_closest
+#test_failing
 
 execute 'ls'
 

@@ -44,3 +44,28 @@ const JsHasText = `
 	    }
 	    return 0;
 		`
+
+const JsClickClosest = `
+		var rootElement = document.querySelector(text);
+		if (rootElement == null) { return 0 }
+
+		var rect = rootElement.getBoundingClientRect()
+
+		var elements = document.querySelectorAll(text2)
+
+		if (elements.length == 0) { return 0 }
+
+		var elementToClick = 0
+		var distance = Number.MAX_VALUE
+		for (var i = 0; i < elements.length; i++) {
+			var rect2 = elements[i].getBoundingClientRect();
+			var thisDistance = Math.hypot(rect2.x - rect.x, rect2.y - rect.y);
+			if (thisDistance < distance) {
+				elementToClick = i;
+				distance = thisDistance;
+			}
+		}
+
+		elements[elementToClick].click()
+		return 1;
+		`
