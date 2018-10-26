@@ -29,7 +29,7 @@ Grab the binary from the release page. You will also need either a selenium serv
 
 ### Running
 
-Run the binary. `./sf`
+Run the binary. `sf`
 
 ### Hello world
 When you run `sf` it expects a start.txt in you current directory. You can also use the `-file` flag to change the start script.
@@ -41,14 +41,14 @@ navigate https://url_to_hello_world
 has_text 'Hello world!'
 ```
 
-That's it!
+Run `sf`.
 
 ### Built-in keywords
 
 Here's a quick list of the built-in keywords. More detailed explanations here.
 
 |Keyword|Arguments|Example|
-|-|-|-|
+|---|---|---|
 | has_text | text | has_text 'Hello world!' |
 | has_text | selector, text | has_text '.class' 'Hello world!' |
 | click | selector | click '.button' |
