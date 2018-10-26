@@ -41,7 +41,7 @@ func (c *Case) Load(filename string) {
 	c.RootKeyword = fileToCommands(file)
 }
 
-func fileToCommands(file []byte) Keyword {
+func fileToCommands(file []byte) *Keyword {
 	str := string(file)
 	log.Debug("File content: ", str)
 	rows := strings.Split(str, "\n")
@@ -89,5 +89,5 @@ func fileToCommands(file []byte) Keyword {
 
 	}
 
-	return c
+	return &c
 }

@@ -2,7 +2,6 @@ package sailfoot
 
 import (
 	"fmt"
-	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -17,8 +16,8 @@ import (
 
 type Case struct {
 	Driver        driver.TestDriver
-	RootKeyword   Keyword
-	KnownKeywords map[string]Keyword
+	RootKeyword   *Keyword
+	KnownKeywords map[string]*Keyword
 }
 
 type Keyword struct {
@@ -29,6 +28,8 @@ type Keyword struct {
 	Passed        bool
 	TestCaseName  string
 	LastResult    bool
+	Ran           bool
+	SkipFail      bool
 }
 
 func (k *Keyword) Init() {
@@ -38,16 +39,19 @@ func (k *Keyword) Init() {
 	k.Passed = true
 	k.TestCaseName = ""
 	k.LastResult = false
+	k.Ran = false
+	k.SkipFail = false
 }
 
 func NewCase(d driver.TestDriver) *Case {
 	t := &Case{}
 	t.Driver = d
-	t.KnownKeywords = map[string]Keyword{}
+	t.KnownKeywords = map[string]*Keyword{}
 	return t
 }
 
-func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]Keyword, args []string) {
+func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]*Keyword, args []string) bool {
+	k.Ran = true
 	for rowNumber := 0; rowNumber < len(k.Commands); rowNumber++ {
 
 		command := k.Commands[rowNumber]
@@ -144,7 +148,7 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]Keyword
 			skipSleep = true
 		} else if commandTmp[0] == "stop_if_success" {
 			if k.LastResult == true {
-				return
+				return false
 			}
 		} else if commandTmp[0] == "execute" {
 			skipSleep = true
@@ -157,13 +161,24 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]Keyword
 		} else {
 			keyword := knownCommands[commandTmp[0]]
 			// TODO check if the command exists
-			keyword.Run(driver, knownCommands, commandTmp[1:])
+			keyword.SkipFail = skipFail
+
+			result := keyword.Run(driver, knownCommands, commandTmp[1:])
+			if !result {
+				return false
+			}
 		}
 
-		if result == false && skipFail == false {
+		if result == false && !k.SkipFail {
 			driver.Stop()
-			os.Exit(1)
-			return
+			k.Passed = false
+			return false
+		}
+
+		if result == false && k.SkipFail {
+			driver.Stop()
+			k.Passed = false
+			return true
 		}
 
 		if skipSleep {
@@ -177,6 +192,8 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]Keyword
 	if k.IsATest {
 		k.Passed = true
 	}
+
+	return true
 }
 
 func (c *Case) Run() {
@@ -187,10 +204,16 @@ func (c *Case) Run() {
 	printResults := false
 	for i := range c.KnownKeywords {
 		command := c.KnownKeywords[i]
+
+		if !command.Ran {
+			continue
+		}
+
 		if command.IsATest && printResults == false {
 			fmt.Print("\n\nResults: \n\n")
 			printResults = true
 		}
+
 		if command.IsATest && command.Passed {
 			fmt.Printf("%s %s\n", aurora.Green("✓"), command.TestCaseName)
 		} else if command.IsATest && !command.Passed {

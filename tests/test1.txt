@@ -21,7 +21,7 @@ log $$variable$$
 
 test_variables barfoo
 test_closest
-#test_failing
+!test_failing
 
 execute 'ls'
 
