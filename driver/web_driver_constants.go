@@ -69,3 +69,19 @@ const JsClickClosest = `
 		elements[elementToClick].click()
 		return 1;
 		`
+
+const JsInputEmpty = `
+		var elements = document.querySelectorAll('input:empty:not([type=hidden]):not([type=button])')
+
+		if (elements.length == 0) { return 0 }
+
+		for (var i = 0; i < elements.length; i++) {
+			var element = elements[i];
+			if (element.hidden || element.value != "") { continue; }
+			element.setAttribute('data-sailfoot-empty', '');
+			return 1
+		}
+
+		return 0;
+		`
+const JsInputEmptyReset = `document.querySelector('input[data-sailfoot-empty]').removeAttribute('data-sailfoot-empty');`

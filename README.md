@@ -7,7 +7,6 @@ A software for controlling browsers for the purpose of end-to-end testing, scrap
 Design philosophies:
 * Easy to use (straightforward scripting, small learning curve)
 * Easy to install, just a single binary
-* Making things easier for testers
 
 ## Etymology
 
@@ -19,9 +18,9 @@ Pleopod:
 
 ### Forewords
 
-Too many enterprise apps have no e2e tests at all. One can't blame the users. Many testing frameworks are cumbersome to install, use and are just 1-to-1 mappings to the WebDriver API, providing nothing more than pretty printing.
+Too many enterprise apps have no e2e tests at all. One can't blame the users. Many testing frameworks are cumbersome to install and use, and are just 1-to-1 mappings to the WebDriver API, providing nothing more than pretty printing.
 
-Hence sailfoot, a highly opinionated testing application/framework that focuses on making testing as simple as possible, in one portable binary.
+In the sea of untested enterprise web apps, one is allowed to do it quick and dirty. Hence sailfoot, a highly opinionated testing application/framework that focuses on making testing as simple as possible, in one portable binary.
 
 ### Installation
 
@@ -32,7 +31,7 @@ Grab the binary from the release page. You will also need either a selenium serv
 Run the binary. `sf`
 
 ### Hello world
-When you run `sf` it expects a start.txt in you current directory. You can also use the `-file` flag to change the start script.
+When you run `sf` it expects a start.txt in you current directory. You can use the `-file` flag to change the start script.
 
 start.txt:
 ```
@@ -45,7 +44,7 @@ Run `sf`.
 
 ### Built-in keywords
 
-Here's a quick list of the built-in keywords. More detailed explanations here.
+Here's a shortened list of the built-in keywords. Full list of keywords explained [in wiki](https://github.com/adl32x/sailfoot/wiki/Keywords).
 
 |Keyword|Arguments|Example|
 |---|---|---|
@@ -61,14 +60,28 @@ Here's a quick list of the built-in keywords. More detailed explanations here.
 
 ### Writing your own keywords
 
-
-
-#### Directory structure
+Making your keyword is as simple as putting it under a directory named `keywords/` and saving it into a .txt file. The filename will be the name of the keyword.
 
 ```
 ├── keywords
-│   ├── ... .txt
-│   ├── ... .txt
+│   ├── keyword1.txt
+│   ├── keyword2.txt
 │   └── ... .txt
 └── start.txt
 ```
+
+#### Arguments
+
+Arguments end up in variables 0..9:
+```
+log 'Sample keyword with arguments'
+input '.long-boring-selector > div > ... $$0$$' $$1$$
+```
+
+So this you could use it as:
+
+`keyword '.username' 'admin'`
+
+### Need to know more?
+
+[Full documentation in Wiki.](https://github.com/adl32x/sailfoot/wiki/Home)

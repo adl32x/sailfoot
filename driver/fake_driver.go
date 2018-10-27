@@ -50,3 +50,7 @@ func (w *FakeDriver) ClickOnText(selector string, text string) bool {
 func (w *FakeDriver) ClickClosestTo(selector1 string, selector2 string) bool {
 	return true
 }
+
+func (w *FakeDriver) InputEmpty(text string) bool {
+	return true
+}

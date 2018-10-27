@@ -2,6 +2,7 @@ package sailfoot
 
 import (
 	"fmt"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -123,7 +124,11 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]*Keywor
 				result = driver.HasText(commandTmp[1], "")
 			}
 		} else if commandTmp[0] == "input" {
-			result = driver.Input(false, commandTmp[1], commandTmp[2])
+			if len(commandTmp) == 3 {
+				result = driver.Input(false, commandTmp[1], commandTmp[2])
+			} else {
+				result = driver.InputEmpty(commandTmp[1])
+			}
 		} else if commandTmp[0] == "input_x" {
 			result = driver.Input(true, commandTmp[1], commandTmp[2])
 		} else if commandTmp[0] == "sleep" {
@@ -160,11 +165,14 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]*Keywor
 			log.Println(aurora.Bold(out))
 		} else {
 			keyword := knownCommands[commandTmp[0]]
-			// TODO check if the command exists
+			if keyword == nil {
+				log.Error("No keyword named ´%s´", commandTmp[0])
+				return false
+			}
 			keyword.SkipFail = skipFail
 
-			result := keyword.Run(driver, knownCommands, commandTmp[1:])
-			if !result {
+			exitOk := keyword.Run(driver, knownCommands, commandTmp[1:])
+			if !exitOk {
 				return false
 			}
 		}
@@ -198,10 +206,11 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]*Keywor
 
 func (c *Case) Run() {
 	c.Driver.Start()
-	c.RootKeyword.Run(c.Driver, c.KnownKeywords, nil)
+	exitOk := c.RootKeyword.Run(c.Driver, c.KnownKeywords, nil)
 	c.Driver.Stop()
 
 	printResults := false
+	hasFailedTest := false
 	for i := range c.KnownKeywords {
 		command := c.KnownKeywords[i]
 
@@ -217,8 +226,15 @@ func (c *Case) Run() {
 		if command.IsATest && command.Passed {
 			fmt.Printf("%s %s\n", aurora.Green("✓"), command.TestCaseName)
 		} else if command.IsATest && !command.Passed {
+			hasFailedTest = true
 			fmt.Printf("%s %s\n", aurora.Red("✗"), command.TestCaseName)
 		}
+	}
+
+	if !exitOk {
+		os.Exit(1)
+	} else if exitOk && hasFailedTest {
+		os.Exit(2)
 	}
 }
 
