@@ -10,6 +10,7 @@ type TestDriver interface {
 	GoToNthWindow(int) bool
 	HasText(string, string) bool
 	Input(bool, string, string) bool
+	InputEmpty(string) bool
 	Log(string) bool
 	Read(string) (string, bool)
 	ExecuteJavascript(string) bool

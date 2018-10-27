@@ -8,9 +8,12 @@ has_text '.yo' 'Test'
 has_text 'Test'
 click 'a'
 input '.input1' 'Hello world!'
-sleep 500
+
 log 'Hello log world!'
 
+input 'Yay'
+
+sleep 500
 
 #jump test
 

@@ -150,6 +150,40 @@ func (w *WebDriver) Input(is_xpath bool, arg string, text string) bool {
 	return true
 }
 
+func (w *WebDriver) InputEmpty(text string) bool {
+	var number int
+
+	retries := 10
+	for {
+		w.page.RunScript(JsInputEmpty, map[string]interface{}{}, &number)
+		if retries == 0 || number == 1 {
+			break
+		}
+
+		time.Sleep(150 * time.Millisecond)
+		retries = retries - 1
+	}
+
+	if number == 1 {
+		el := w.page.All("input[data-sailfoot-empty]")
+
+		count, _ := el.Count()
+		if count != 1 {
+			log.Errorf("input. Something went wrong.")
+			return false
+		}
+
+		el.Fill(text)
+		w.page.RunScript(JsInputEmptyReset, map[string]interface{}{}, &number)
+
+		log.Logf("input, ´%s´", text)
+	} else {
+		log.Errorf("input, ´%s´", text)
+	}
+
+	return number == 1
+}
+
 func (w *WebDriver) Log(arg string) bool {
 	log.Logf("%s %s", aurora.Bold("Log:"), arg)
 	return true
