@@ -1,6 +1,7 @@
 package driver
 
 import (
+	"os"
 	"time"
 
 	log "github.com/adl32x/sailfoot/log"
@@ -16,14 +17,33 @@ type WebDriver struct {
 }
 
 func (w *WebDriver) Start() {
-	driver := agouti.ChromeDriver()
-	if err := driver.Start(); err != nil {
-		log.Error("Failed to start Selenium: ", err)
-	}
-	w.driver = driver
+	// w.driver = driver
 	w.page, _ = w.driver.NewPage()
 	w.pages = append(w.pages, w.page)
 	w.page.SetImplicitWait(10000)
+}
+
+func (w *WebDriver) Init(driverType *string) {
+	if *driverType == "chrome" {
+		w.driver = agouti.ChromeDriver()
+		if err := w.driver.Start(); err != nil {
+			log.Error("Failed to start with chromedriver: ", err)
+		}
+	} else if *driverType == "phantomjs" {
+		w.driver = agouti.PhantomJS()
+		if err := w.driver.Start(); err != nil {
+			log.Error("Failed to start phantomjs: ", err)
+		}
+	} else if *driverType == "firefox" {
+		w.driver = agouti.GeckoDriver()
+		if err := w.driver.Start(); err != nil {
+			log.Error("Failed to start geckodriver: ", err)
+		}
+	} else {
+		log.Error("Unsupported driver")
+		os.Exit(1)
+	}
+
 }
 
 func (w *WebDriver) GoToNthWindow(nth int) bool {
