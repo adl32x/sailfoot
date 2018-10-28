@@ -26,7 +26,7 @@ In the sea of untested enterprise web apps, one is allowed to do it quick and di
 
 ### Installation
 
-Grab the binary from the release page. You will also need either a selenium server, or a webdriver like chromedriver.
+Grab the binary from the [release page](https://github.com/adl32x/sailfoot/releases). You will also need either a selenium server, or a webdriver like chromedriver.
 
 ### Running
 

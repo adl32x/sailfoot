@@ -15,5 +15,6 @@
 
 .idea
 main
-sf
 
+sf
+*.tar.gz
