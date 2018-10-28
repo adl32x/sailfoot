@@ -16,6 +16,8 @@ Pleopod:
 
 ## Documentation
 
+Status: Still a very early work in progress!
+
 ### Forewords
 
 Too many enterprise apps have no e2e tests at all. One can't blame the users. Many testing frameworks are cumbersome to install and use, and are just 1-to-1 mappings to the WebDriver API, providing nothing more than pretty printing.

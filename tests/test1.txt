@@ -1,6 +1,7 @@
 
 navigate file:///home/andreas/work/src/github.com/adl32x/sailfoot/tests/test1.html
 
+sleep 500
 
 #label test
 

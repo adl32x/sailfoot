@@ -71,7 +71,7 @@ const JsClickClosest = `
 		`
 
 const JsInputEmpty = `
-		var elements = document.querySelectorAll('input:empty:not([type=hidden]):not([type=button])')
+		var elements = document.querySelectorAll('input:not([type=hidden]):not([type=button])')
 
 		if (elements.length == 0) { return 0 }
 
