@@ -12,7 +12,8 @@ func main() {
 	startFile := flag.String("file", "start.txt", "Start file")
 	driverType := flag.String("driver", "default", "(experimental) Driver type")
 	runner := flag.String("runner", "cli", "Runner type (cli / server)")
-	port := flag.Int("runner port", 3000, "Runner port (cli / server)")
+	port := flag.Int("port", 3000, "Runner port (cli / server)")
+	// browser := flag.String("browser", "chrome", "chrome / firefox / phantomjs")
 	flag.Parse()
 
 	fmt.Printf("🍤 Sailfoot. Startfile: %s\n\n", *startFile)

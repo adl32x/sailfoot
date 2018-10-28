@@ -21,7 +21,7 @@ func (w *WebDriver) Start() {
 		log.Error("Failed to start Selenium: ", err)
 	}
 	w.driver = driver
-	w.page, _ = w.driver.NewPage(agouti.Browser("chrome"))
+	w.page, _ = w.driver.NewPage()
 	w.pages = append(w.pages, w.page)
 	w.page.SetImplicitWait(10000)
 }
@@ -72,7 +72,7 @@ func (w *WebDriver) Navigate(arg string) bool {
 }
 
 func (w *WebDriver) NewPage(arg string) bool {
-	w.page, _ = w.driver.NewPage(agouti.Browser("chrome"))
+	w.page, _ = w.driver.NewPage()
 	w.pages = append(w.pages, w.page)
 	log.Logf("new_page, ´%s´", arg)
 	w.Navigate(arg)
@@ -115,7 +115,12 @@ func (w *WebDriver) HasText(arg string, arg2 string) bool {
 		return false
 	}
 
-	t, _ := el.Text()
+	t, err := el.Text()
+
+	if err != nil {
+		log.Error("input, Something went wrong.")
+		log.Error(err)
+	}
 
 	if t != arg2 {
 		log.Errorf("has_text, failed ´%s´ ´%s´", arg, arg2)
