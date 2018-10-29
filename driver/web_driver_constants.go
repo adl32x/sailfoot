@@ -85,3 +85,10 @@ const JsInputEmpty = `
 		return 0;
 		`
 const JsInputEmptyReset = `document.querySelector('input[data-sailfoot-empty]').removeAttribute('data-sailfoot-empty');`
+
+const JsActiveElement = `
+		document.activeElement.setAttribute('data-sailfoot-active-element', '');
+		return 1;
+		`
+
+const JsActiveElementReset = `document.querySelector('[data-sailfoot-empty]').removeAttribute('data-sailfoot-active-element');`

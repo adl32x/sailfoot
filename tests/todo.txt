@@ -1,0 +1,18 @@
+navigate 'file:///home/andreas/work/src/github.com/adl32x/sailfoot/tests/todomvc/index.html'
+
+input 'Hello'
+enter
+input 'World'
+enter
+
+has_text '.todo-count' '2 items left'
+
+sleep 500
+click '.toggle'
+has_text '.todo-count' '1 item left'
+click '.toggle'
+sleep 500
+has_text '.todo-count' '0 items left'
+
+
+sleep 500

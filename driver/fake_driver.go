@@ -54,3 +54,7 @@ func (w *FakeDriver) ClickClosestTo(selector1 string, selector2 string) bool {
 func (w *FakeDriver) InputEmpty(text string) bool {
 	return true
 }
+
+func (w *FakeDriver) SendKey(keycode string) bool {
+	return true
+}

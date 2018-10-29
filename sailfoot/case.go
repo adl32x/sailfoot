@@ -129,6 +129,12 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]*Keywor
 			} else {
 				result = driver.InputEmpty(commandTmp[1])
 			}
+		} else if commandTmp[0] == "enter" {
+			result = driver.SendKey("EnterKey")
+		} else if commandTmp[0] == "backspace" {
+			result = driver.SendKey("BackspaceKey")
+		} else if commandTmp[0] == "sendkey" {
+			result = driver.SendKey(commandTmp[1])
 		} else if commandTmp[0] == "input_x" {
 			result = driver.Input(true, commandTmp[1], commandTmp[2])
 		} else if commandTmp[0] == "sleep" {

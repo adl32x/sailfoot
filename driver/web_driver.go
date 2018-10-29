@@ -74,7 +74,7 @@ func (w *WebDriver) Click(is_xpath bool, arg string) bool {
 	}
 	if count > 1 {
 		log.Logf("click, ´%s´ found multiple elements, clicking first.", arg)
-		el.First(arg).Click()
+		w.page.First(arg).Click()
 	} else {
 		el.Click()
 	}
@@ -144,6 +144,7 @@ func (w *WebDriver) HasText(arg string, arg2 string) bool {
 
 	if t != arg2 {
 		log.Errorf("has_text, failed ´%s´ ´%s´", arg, arg2)
+		log.Errorf("Text in selection: %s", t)
 		return false
 	}
 
@@ -296,4 +297,27 @@ func (w *WebDriver) ClickClosestTo(selector1 string, selector2 string) bool {
 	}
 
 	return number == 1
+}
+
+func (w *WebDriver) SendKey(keycode string) bool {
+	var number int
+	w.page.RunScript(JsActiveElement, map[string]interface{}{}, &number)
+
+	keyToSend := WEBDRIVER_KEYCODES[keycode]
+	if keyToSend == "" {
+		keyToSend = keycode
+	}
+
+	err := w.page.Find("[data-sailfoot-active-element]").SendKeys(keyToSend)
+
+	w.page.RunScript(JsActiveElementReset, map[string]interface{}{}, &number)
+
+	if err != nil {
+		log.Errorf("sendkey, something went wrong")
+		log.Error(err)
+		return false
+	}
+
+	log.Logf("sendkey, ´%s´", keycode)
+	return true
 }

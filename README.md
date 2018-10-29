@@ -80,7 +80,7 @@ log 'Sample keyword with arguments'
 input '.long-boring-selector > div > ... $$0$$' $$1$$
 ```
 
-So this you could use it as:
+If you save this as `keyword.txt` you can then use it like this:
 
 `keyword '.username' 'admin'`
 
