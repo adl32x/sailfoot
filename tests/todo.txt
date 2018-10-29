@@ -8,9 +8,9 @@ enter
 has_text '.todo-count' '2 items left'
 
 sleep 500
-click '.toggle'
+click_0nth '.toggle'
 has_text '.todo-count' '1 item left'
-click '.toggle'
+click_1nth '.toggle'
 sleep 500
 has_text '.todo-count' '0 items left'
 

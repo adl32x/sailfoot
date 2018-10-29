@@ -82,6 +82,12 @@ func (w *WebDriver) Click(is_xpath bool, arg string) bool {
 	return true
 }
 
+func (w *WebDriver) ClickNth(arg string, nth int) bool {
+	w.page.All(arg).At(nth).Click()
+	log.Logf("click_%dnth, ´%s´.", nth, arg)
+	return true
+}
+
 func (w *WebDriver) Navigate(arg string) bool {
 	err := w.page.Navigate(arg)
 	if err != nil {

@@ -58,3 +58,7 @@ func (w *FakeDriver) InputEmpty(text string) bool {
 func (w *FakeDriver) SendKey(keycode string) bool {
 	return true
 }
+
+func (w *FakeDriver) ClickNth(arg string, nth int) bool {
+	return true
+}

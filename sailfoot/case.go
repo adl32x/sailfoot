@@ -108,6 +108,10 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]*Keywor
 			result = driver.Click(true, commandTmp[1])
 		} else if commandTmp[0] == "click_on_text" {
 			result = driver.ClickOnText("", commandTmp[1])
+		} else if matches, _ := regexp.MatchString("click_[0-9]nth", commandTmp[0]); matches {
+			re := regexp.MustCompile("[0-9]")
+			nth, _ := strconv.Atoi(re.FindAllString(commandTmp[0], -1)[0])
+			result = driver.ClickNth(commandTmp[1], nth)
 		} else if commandTmp[0] == "click_closest_to" {
 			result = driver.ClickClosestTo(commandTmp[1], commandTmp[2])
 		} else if commandTmp[0] == "navigate" {
@@ -172,7 +176,7 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]*Keywor
 		} else {
 			keyword := knownCommands[commandTmp[0]]
 			if keyword == nil {
-				log.Error("No keyword named ´%s´", commandTmp[0])
+				log.Errorf("No keyword named ´%s´", commandTmp[0])
 				return false
 			}
 			keyword.SkipFail = skipFail

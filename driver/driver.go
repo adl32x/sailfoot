@@ -4,6 +4,7 @@ type TestDriver interface {
 	Start()
 	Stop()
 	Click(bool, string) bool
+	ClickNth(string, int) bool
 	ClickClosestTo(string, string) bool
 	Navigate(string) bool
 	NewPage(string) bool
