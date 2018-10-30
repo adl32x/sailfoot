@@ -5,11 +5,11 @@ enter
 input 'World'
 enter
 
-has_text '.todo-count' '2 items left'
+has_text '2 items left'
 
 sleep 500
 click_0nth '.toggle'
-has_text '.todo-count' '1 item left'
+has_text '1 item left'
 click_1nth '.toggle'
 sleep 500
 has_text '.todo-count' '0 items left'

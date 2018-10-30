@@ -3,5 +3,5 @@
 # Move to script directory.
 cd "${0%/*}"
 
-#../sf -file test1.txt
-../sf -file todo.txt
+../sf -driver chromeheadless -file test1.txt
+../sf -driver chromeheadless -file todo.txt

@@ -24,10 +24,17 @@ func (w *WebDriver) Start() {
 }
 
 func (w *WebDriver) Init(driverType *string) {
-	if *driverType == "chrome" {
-		w.driver = agouti.ChromeDriver()
+	if *driverType == "chromeheadless" {
+		w.driver = agouti.ChromeDriver(
+			agouti.ChromeOptions("args", []string{"--headless", "--disable-gpu"}),
+		)
 		if err := w.driver.Start(); err != nil {
 			log.Error("Failed to start with chromedriver: ", err)
+		}
+	} else if *driverType == "chrome" {
+		w.driver = agouti.ChromeDriver()
+		if err := w.driver.Start(); err != nil {
+			log.Error("Failed to start chrome: ", err)
 		}
 	} else if *driverType == "phantomjs" {
 		w.driver = agouti.PhantomJS()
@@ -40,7 +47,7 @@ func (w *WebDriver) Init(driverType *string) {
 			log.Error("Failed to start geckodriver: ", err)
 		}
 	} else {
-		log.Error("Unsupported driver")
+		log.Error("Unsupported driver %s", *driverType)
 		os.Exit(1)
 	}
 
