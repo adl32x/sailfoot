@@ -1,0 +1,23 @@
+{
+  "name": "parcel-mithril-jsx",
+  "version": "1.0.0",
+  "description": "Parcel & Mithril boilerplate",
+  "main": "index.js",
+  "author": "Andreas Lindroos",
+  "license": "MIT",
+  "scripts": {
+    "dev": "parcel index.html",
+    "build": "parcel build index.html -d build/ --public-url ./"
+  },
+  "dependencies": {
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "mithril": "^2.0.0-rc.4",
+    "parcel-bundler": "^1.11.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "bulma": "^0.7.4",
+    "sass": "^1.17.2"
+  }
+}

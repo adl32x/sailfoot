@@ -10,13 +10,13 @@ import (
 
 func main() {
 	startFile := flag.String("file", "start.txt", "Start file")
-	driverType := flag.String("driver", "chrome", "Possible values: chrome, firefox, phantomjs, selenium")
+	driverType := flag.String("driver", "chrome", "Possible values: chrome, chromeheadless, selenium")
 	// browser := flag.String("browser", "chrome", "chrome / firefox / phantomjs")
 	runner := flag.String("runner", "cli", "Runner type (cli / server)")
 	port := flag.Int("port", 3000, "Runner port (cli / server)")
 	flag.Parse()
 
-	fmt.Printf("🍤 Sailfoot v0.2. Startfile: %s\n\n", *startFile)
+	fmt.Printf("🦐 Sailfoot 0.2 \nStartfile: %s\n\n", *startFile)
 
 	var sf *sailfoot.Case
 	if *driverType == "fake" {

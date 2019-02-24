@@ -21,7 +21,7 @@ func assertEqual(t *testing.T, a interface{}, b interface{}, message string) {
 func TestLoad(t *testing.T) {
 
 	var sf sailfoot.Case
-	sf.KnownKeywords = map[string]sailfoot.Keyword{}
+	sf.KnownKeywords = map[string]*sailfoot.Keyword{}
 
 	sf.Load("tests/unit.txt")
 

@@ -1,0 +1,57 @@
+@charset "utf-8";
+@import "~bulma/bulma";
+
+$sidebarWidth: 250px;
+$topBarHeight: 3.25rem;
+
+#sidebar-area {
+    width: $sidebarWidth;
+    left: 0;
+    top: 0;
+    height: 100%;
+    position: absolute;
+    box-sizing: border-box;
+    padding: 0.5rem;
+
+    border-right: 2px solid $grey-lighter;
+
+    .buttons {
+        border-bottom: 1px solid gainsboro;
+    }
+}
+
+#main-area {
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 0;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: calc(100% - #{$sidebarWidth});
+    position: absolute;
+    #top-bar {
+        background-color: #f0f0f0;
+        border-bottom: 1px solid gainsboro;
+        padding: 0.5rem;
+        height: $topBarHeight;
+    }
+    #iframe-browser {
+        width: 100%;
+        height: calc(100% - #{$topBarHeight});
+        iframe {
+            width: 100%;
+            height: 100%;
+            overflow: scroll;
+        }
+    }
+}
+
+.keywords {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 10pt;
+    color: $grey;
+    li {
+        margin-bottom: 0.25rem; 
+        border-bottom: 1px solid #f0f0f0;
+    }
+}

@@ -115,7 +115,12 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]*Keywor
 		} else if commandTmp[0] == "click_closest_to" {
 			result = driver.ClickClosestTo(commandTmp[1], commandTmp[2])
 		} else if commandTmp[0] == "navigate" {
-			result = driver.Navigate(commandTmp[1])
+			if strings.HasPrefix(commandTmp[1], "local://") {
+				dir, _ := os.Getwd()
+				result = driver.Navigate(strings.Replace(commandTmp[1], "local://", "file://"+dir+"/", 1))
+			} else {
+				result = driver.Navigate(commandTmp[1])
+			}
 		} else if commandTmp[0] == "new_page" {
 			result = driver.NewPage(commandTmp[1])
 		} else if commandTmp[0] == "go_to_window" {
@@ -159,7 +164,7 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]*Keywor
 			value, result = driver.Read(commandTmp[1])
 			k.Variables[commandTmp[2]] = value
 		} else if commandTmp[0] == "testcase" {
-			log.Printf("\n🍤 Running testcase: %s \n", commandTmp[1])
+			log.Printf("\nRunning testcase: %s \n", commandTmp[1])
 			skipSleep = true
 		} else if commandTmp[0] == "stop_if_success" {
 			if k.LastResult == true {
@@ -229,18 +234,19 @@ func (c *Case) Run() {
 		}
 
 		if command.IsATest && printResults == false {
-			fmt.Print("\n\nResults: \n\n")
+			fmt.Print("\n\nResults: \n")
 			printResults = true
 		}
 
 		if command.IsATest && command.Passed {
-			fmt.Printf("%s %s\n", aurora.Green("✓"), command.TestCaseName)
+			fmt.Printf("    %s %s\n", aurora.Green("✓"), command.TestCaseName)
 		} else if command.IsATest && !command.Passed {
 			hasFailedTest = true
-			fmt.Printf("%s %s\n", aurora.Red("✗"), command.TestCaseName)
+			fmt.Printf("    %s %s\n", aurora.Red("✗"), command.TestCaseName)
 		}
 	}
 
+	fmt.Print("\n")
 	if !exitOk {
 		os.Exit(1)
 	} else if exitOk && hasFailedTest {

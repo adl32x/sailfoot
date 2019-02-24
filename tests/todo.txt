@@ -1,4 +1,4 @@
-navigate 'file:///home/andreas/work/src/github.com/adl32x/sailfoot/tests/todomvc/index.html'
+navigate 'local://todomvc/index.html'
 
 input 'Hello'
 enter
