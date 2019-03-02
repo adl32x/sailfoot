@@ -32,7 +32,9 @@ func (w *WebDriver) Init(driverType *string) {
 			log.Error("Failed to start with chromedriver: ", err)
 		}
 	} else if *driverType == "chrome" {
-		w.driver = agouti.ChromeDriver()
+		w.driver = agouti.ChromeDriver(
+			agouti.ChromeOptions("args", []string{"--disable-infobars"}),
+		)
 		if err := w.driver.Start(); err != nil {
 			log.Error("Failed to start chrome: ", err)
 		}
