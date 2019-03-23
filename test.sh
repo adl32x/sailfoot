@@ -6,4 +6,4 @@ go build -o sf
 echo "Start testing."
 echo "-------------------"
 
-./tests/test_all.sh
+./tests/test_all.sh $1

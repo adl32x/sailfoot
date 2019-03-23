@@ -10,12 +10,12 @@ import (
 var colors = true
 
 func Log(args ...interface{}) {
-	fmt.Printf("%s ", aurora.Green("-"))
+	fmt.Printf("%s ", aurora.Green(">"))
 	fmt.Println(args...)
 }
 
 func Logf(format string, args ...interface{}) {
-	fmt.Printf("%s ", aurora.Green("-"))
+	fmt.Printf("%s ", aurora.Green(">"))
 	fmt.Printf(format, args...)
 	fmt.Printf("\n")
 }
