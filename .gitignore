@@ -18,3 +18,4 @@ main
 
 sf
 *.tar.gz
+.vscode/

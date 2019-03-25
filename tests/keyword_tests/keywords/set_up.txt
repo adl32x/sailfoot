@@ -1,0 +1,1 @@
+navigate local://test1.html

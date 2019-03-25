@@ -14,8 +14,8 @@ else
     # Test all
     echo "Running all tests in keywords/"
     echo "------------------------------"
-    for file in keywords/*; do
-        ../sf -file $file
+    for file in keyword_tests/test_*; do
+        ../sf -driver chromeheadless -file $file
     done
 fi
 

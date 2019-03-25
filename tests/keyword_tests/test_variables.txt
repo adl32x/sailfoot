@@ -1,3 +1,5 @@
+set_up
+
 testcase 'Test variables'
 log 'yay!'
-log $$0$$
+variables 'Foo bar'

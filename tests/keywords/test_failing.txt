@@ -1,3 +1,0 @@
-testcase 'Second testcase'
-log 'fail on purpose'
-has_text 'No such text'

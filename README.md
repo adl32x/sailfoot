@@ -87,3 +87,4 @@ If you save this as `keyword.txt` you can then use it like this:
 ### Need to know more?
 
 [Full documentation in Wiki.](https://github.com/adl32x/sailfoot/wiki/Home)
+

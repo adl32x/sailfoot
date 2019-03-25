@@ -1,4 +1,4 @@
-testcase 'Test the closest methods'
+set_up
 
 click_closest_to '.input1' 'input[type=button]'
 has_text 'Clicked submit 1'
