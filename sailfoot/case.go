@@ -173,11 +173,14 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]*Keywor
 		} else if commandTmp[0] == "execute" {
 			skipSleep = true
 			out, err := utils.Execute(commandTmp[1])
-			if err != nil {
-				log.Errorf("RunList %s failed, %s", commandTmp[1], err)
+			if out != "" {
+				log.Println(aurora.Bold(out))
 			}
-			log.Log("Execute", "´"+commandTmp[1]+"´")
-			log.Println(aurora.Bold(out))
+			if err != nil {
+				log.Errorf("execute %s failed, %s", commandTmp[1], err)
+				return false
+			}
+			log.Log("execute", "´"+commandTmp[1]+"´")
 		} else {
 			keyword := knownCommands[commandTmp[0]]
 			if keyword == nil {

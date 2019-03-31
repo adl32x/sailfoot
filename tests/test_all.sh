@@ -5,11 +5,9 @@ set -e
 # Move to script directory.
 cd "${0%/*}"
 
-echo $1
-
 if [ -n "$1" ]; then
     # Single keyword test    
-    ../sf -file keywords/test_$1.txt
+    ../sf -file keyword_tests/test_$1.txt
 else
     # Test all
     echo "Running all tests in keywords/"

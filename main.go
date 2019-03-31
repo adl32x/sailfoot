@@ -16,7 +16,7 @@ func main() {
 	port := flag.Int("port", 3000, "Runner port (cli / server)")
 	flag.Parse()
 
-	fmt.Printf("🦐 Sailfoot 0.2 \nStartfile: %s\n\n", *startFile)
+	fmt.Printf("🦐 Sailfoot 0.2 \n\nStartfile: %s\n\n", *startFile)
 
 	var sf *sailfoot.Case
 	if *driverType == "fake" {

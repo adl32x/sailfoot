@@ -1,0 +1,6 @@
+set_up
+
+testcase 'Test read'
+read #read_text FOOBAR
+log $$FOOBAR$$
+execute 'test sailfoot = $$FOOBAR$$'
