@@ -1,3 +1,5 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/adl32x/sailfoot)](https://goreportcard.com/report/github.com/adl32x/sailfoot)
+
 ![Alt logo](./logo.svg)
 
 # Sailfoot
