@@ -181,6 +181,10 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]*Keywor
 				return false
 			}
 			log.Log("execute", "´"+commandTmp[1]+"´")
+		} else if commandTmp[0] == "window_size" {
+			width, _ := strconv.Atoi(commandTmp[1])
+			height, _ := strconv.Atoi(commandTmp[2])
+			result = driver.WindowSize(width, height)
 		} else {
 			keyword := knownCommands[commandTmp[0]]
 			if keyword == nil {

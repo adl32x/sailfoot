@@ -62,3 +62,7 @@ func (w *FakeDriver) SendKey(keycode string) bool {
 func (w *FakeDriver) ClickNth(arg string, nth int) bool {
 	return true
 }
+
+func (w *FakeDriver) WindowSize(width, height int) bool {
+	return true
+}

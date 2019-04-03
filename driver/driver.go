@@ -1,5 +1,7 @@
 package driver
 
+// TestDriver is and interface that exposes all browser functionality.
+// Current implementing classes: FakeDriver, WebDriver (written with Agouti)
 type TestDriver interface {
 	Start()
 	Stop()
@@ -17,6 +19,7 @@ type TestDriver interface {
 	ExecuteJavascript(string) bool
 	ClickOnText(string, string) bool
 	SendKey(string) bool
+	WindowSize(int, int) bool
 }
 
 var WEBDRIVER_KEYCODES = map[string]string{

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 echo "Build binary."
 go build -o sf
 

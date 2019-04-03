@@ -336,3 +336,15 @@ func (w *WebDriver) SendKey(keycode string) bool {
 	log.Logf("sendkey, ´%s´", keycode)
 	return true
 }
+
+// WindowSize resizes the browser window to width x height.
+func (w *WebDriver) WindowSize(width, height int) bool {
+	err := w.page.Size(width, height)
+	if err != nil {
+		log.Errorf("window_size, something went wrong")
+		log.Error(err)
+		return false
+	}
+	log.Logf("window_size, ´%d´ ´%d´", width, height)
+	return true
+}

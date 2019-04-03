@@ -1,0 +1,6 @@
+set_up
+
+window_size 300 300
+sleep 300
+window_size 1920 1080
+sleep 300
