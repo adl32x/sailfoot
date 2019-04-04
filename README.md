@@ -1,4 +1,4 @@
-[![Go Report Card](https://goreportcard.com/badge/github.com/adl32x/sailfoot)](https://goreportcard.com/report/github.com/adl32x/sailfoot)
+[![Go Report Card](https://goreportcard.com/badge/github.com/adl32x/sailfoot)](https://goreportcard.com/report/github.com/adl32x/sailfoot) [![CircleCI](https://circleci.com/gh/adl32x/sailfoot.svg?style=svg)](https://circleci.com/gh/adl32x/sailfoot)
 
 ![Alt logo](./logo.svg)
 
