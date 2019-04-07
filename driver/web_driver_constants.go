@@ -90,7 +90,24 @@ const JsInputEmpty = `
 
 		return 0;
 		`
+
+const JsSelectEmpty = `
+		var elements = document.querySelectorAll('select:not([type=hidden])')
+
+		if (elements.length == 0) { return 0 }
+
+		for (var i = 0; i < elements.length; i++) {
+			var element = elements[i];
+			element.setAttribute('data-sailfoot-empty', '');
+			return 1
+		}
+
+		return 0;
+		`
+
 const JsInputEmptyReset = `document.querySelector('input[data-sailfoot-empty]').removeAttribute('data-sailfoot-empty');`
+
+const JsSelectEmptyReset = `document.querySelector('input[data-sailfoot-empty]').removeAttribute('data-sailfoot-empty');`
 
 const JsActiveElement = `
 		document.activeElement.setAttribute('data-sailfoot-active-element', '');

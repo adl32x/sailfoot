@@ -66,3 +66,11 @@ func (w *FakeDriver) ClickNth(arg string, nth int) bool {
 func (w *FakeDriver) WindowSize(width, height int) bool {
 	return true
 }
+
+func (w *FakeDriver) Select(selector string, text string) bool {
+	return true
+}
+
+func (w *FakeDriver) SelectEmpty(text string) bool {
+	return true
+}

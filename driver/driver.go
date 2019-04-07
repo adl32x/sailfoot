@@ -14,6 +14,8 @@ type TestDriver interface {
 	HasText(string, string) bool
 	Input(bool, string, string) bool
 	InputEmpty(string) bool
+	Select(string, string) bool
+	SelectEmpty(string) bool
 	Log(string) bool
 	Read(string) (string, bool)
 	ExecuteJavascript(string) bool
