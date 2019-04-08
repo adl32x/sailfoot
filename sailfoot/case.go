@@ -144,6 +144,8 @@ func (k *Keyword) Run(driver driver.TestDriver, knownCommands map[string]*Keywor
 			} else {
 				result = driver.SelectEmpty(commandTmp[1])
 			}
+		} else if commandTmp[0] == "check" {
+			result = driver.Check(commandTmp[1])
 		} else if commandTmp[0] == "enter" {
 			result = driver.SendKey("EnterKey")
 		} else if commandTmp[0] == "backspace" {

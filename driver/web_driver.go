@@ -279,6 +279,26 @@ func (w *WebDriver) SelectEmpty(text string) bool {
 	return number == 1
 }
 
+func (w *WebDriver) Check(arg string) bool {
+	var el *agouti.MultiSelection
+
+	el = w.page.All(arg)
+
+	count, _ := el.Count()
+	if count == 0 {
+		log.Errorf("check, could not find element ´%s´", arg)
+		return false
+	}
+	if count > 1 {
+		log.Logf("check, ´%s´ found multiple elements, selecting first", arg)
+		el.First(arg).Check()
+	} else {
+		el.Check()
+	}
+	log.Logf("check, ´%s´", arg)
+	return true
+}
+
 func (w *WebDriver) Log(arg string) bool {
 	log.Logf("%s %s", aurora.Bold("Log:"), arg)
 	return true

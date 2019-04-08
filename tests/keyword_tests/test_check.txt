@@ -1,0 +1,4 @@
+set_up
+
+check '#checkbox1'
+sleep 5000

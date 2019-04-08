@@ -16,6 +16,7 @@ type TestDriver interface {
 	InputEmpty(string) bool
 	Select(string, string) bool
 	SelectEmpty(string) bool
+	Check(string) bool
 	Log(string) bool
 	Read(string) (string, bool)
 	ExecuteJavascript(string) bool
@@ -24,6 +25,8 @@ type TestDriver interface {
 	WindowSize(int, int) bool
 }
 
+// WEBDRIVER_KEYCODES defines common keycodes. You can use the keyword SendKey to send them,
+// eg. "SendKey EnterKey".
 var WEBDRIVER_KEYCODES = map[string]string{
 	"NullKey":       string('\ue000'),
 	"CancelKey":     string('\ue001'),

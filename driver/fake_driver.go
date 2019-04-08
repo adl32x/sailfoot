@@ -74,3 +74,7 @@ func (w *FakeDriver) Select(selector string, text string) bool {
 func (w *FakeDriver) SelectEmpty(text string) bool {
 	return true
 }
+
+func (w *FakeDriver) Check(selector string) bool {
+	return true
+}
