@@ -290,8 +290,8 @@ func (w *WebDriver) Check(arg string) bool {
 		return false
 	}
 	if count > 1 {
-		log.Logf("check, ´%s´ found multiple elements, selecting first", arg)
-		el.First(arg).Check()
+		log.Logf("check, ´%s´ found multiple elements, checking first", arg)
+		el.At(0).Check()
 	} else {
 		el.Check()
 	}

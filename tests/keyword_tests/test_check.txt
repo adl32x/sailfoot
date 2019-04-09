@@ -1,4 +1,6 @@
 set_up
 
-check '#checkbox1'
-sleep 5000
+check input[type=checkbox]
+sleep 500
+check '#checkbox2'
+sleep 500
