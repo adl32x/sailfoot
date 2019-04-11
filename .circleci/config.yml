@@ -6,26 +6,26 @@ jobs:
     working_directory: /go/src/github.com/adl32x/sailfoot
     docker:
       - image: circleci/golang:1.11-browsers
-    persist_to_workspace:
-      root: /tmp/workspace
-      paths:
-        - artifacts
     steps:
       - checkout
       - run: go get ./...
       - run: bash test.sh
       - run: bash build.sh
+      - persist_to_workspace:
+          root: /go/src/github.com/adl32x/sailfoot
+          paths:
+            - artifacts
 
   publish-github-release:
+    working_directory: /go/src/github.com/adl32x/sailfoot
     docker:
       - image: circleci/golang:1.11
     steps:
       - attach_workspace:
-          at: /tmp/workspace
+          at: /go/src/github.com/adl32x/sailfoot
       - run:
           name: "Publish Release on GitHub"
           command: |
-            ls /tmp/workspace
             go get github.com/tcnksm/ghr
             ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME -c $CIRCLE_SHA1 -delete nightly ./artifacts
 
