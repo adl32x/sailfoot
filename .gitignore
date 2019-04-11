@@ -19,3 +19,4 @@ main
 sf
 *.tar.gz
 .vscode/
+artifacts/

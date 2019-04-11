@@ -16,6 +16,8 @@ do
 
     env GOOS=$GOOS GOARCH=$GOARCH go build -o sf $package
     tar -czf $output_name sf
+    mkdir -p artifacts
+    mv $output_name artifacts/$output_name
     if [ $? -ne 0 ]; then
         echo 'An error has occurred! Aborting the script execution...'
         exit 1
