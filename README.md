@@ -2,7 +2,7 @@
 
 ![Alt logo](./logo.svg)
 
-# Sailfoot
+# Sailfoot, WIP
 
 A software for controlling browsers for the purpose of end-to-end testing, scraping and other automation.
 
@@ -18,8 +18,6 @@ Pleopod:
 
 ## Documentation
 
-Status: Still a very early work in progress!
-
 ### Forewords
 
 Too many enterprise apps have no e2e tests at all. One can't blame the users. Many testing frameworks are cumbersome to install and use, and are just 1-to-1 mappings to the WebDriver API, providing nothing more than pretty printing.
@@ -29,6 +27,16 @@ In the sea of untested enterprise web apps, one is allowed to do it quick and di
 ### Installation
 
 Grab the binary from the [release page](https://github.com/adl32x/sailfoot/releases). You will also need either a selenium server, or a webdriver like chromedriver.
+
+**One liners:**
+```
+# Mac:
+curl -L https://github.com/adl32x/sailfoot/releases/download/nightly/sf-darwin-amd64.tar.gz | tar xz && sudo cp sf /usr/local/bin/sf
+
+# Linux:
+curl -L https://github.com/adl32x/sailfoot/releases/download/nightly/sf-linux-amd64.tar.gz | tar xz && sudo cp sf /usr/local/bin/sf
+
+```
 
 ### Running
 
